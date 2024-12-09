@@ -25,7 +25,7 @@
             break;
         case 'DELETE_/user':
             $requestBody = json_decode(file_get_contents('php://input'), true);
-            echo json_encode($user->deleteUser());
+            echo json_encode($user->deleteUser($requestBody));
             break;
         default:
             echo json_encode([

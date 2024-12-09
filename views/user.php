@@ -64,30 +64,10 @@
                                 <th scope="col">Username</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Role</th>
-                                <th scope="col">Action</th>
+                                <th scope="col" style="width: 300px;">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row" class="text-center">1</th>
-                                <td>admin_1</td>
-                                <td>admin1@example.com</td>
-                                <td><span class="badge text-bg-success">Admin</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-warning">Edit</button>
-                                    <button type="button" class="btn btn-sm btn-danger">Hapus</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="text-center">2</th>
-                                <td>pic_molding</td>
-                                <td>pic_molding@example.com</td>
-                                <td><span class="badge text-bg-success">Pic Molding</span></td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-warning">Edit</button>
-                                    <button type="button" class="btn btn-sm btn-danger">Hapus</button>
-                                </td>
-                            </tr>
+                        <tbody id="user-table-body">
                         </tbody>
                     </table>
                 </div>
@@ -100,6 +80,35 @@
 <script src="../utils/swalAlert.js"></script>
 
 <script>
+    getUser()
+    async function getUser() {
+        const responseGetUser = await fetch('/attendance/api/user.php/user', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }).then(response => response.json())
+        let html_data = '';
+        if (responseGetUser.data.length == 0 || !responseGetUser.success) {
+            html_data += '<tr><td colspan="5" class="text-center">Data tidak tersedia</td></tr>';
+            document.getElementById('user-table-body').innerHTML = html_data;
+            return
+        }
+        responseGetUser.data.forEach((user, index) => {
+            html_data += '<tr>';
+            html_data += `<th scope="row" class="text-center">${index + 1}</th>`;
+            html_data += `<td>${user.username}</td>`;
+            html_data += `<td>${user.email}</td>`;
+            html_data += `<td><span class="badge text-bg-success">${user.role}</span></td>`;
+            html_data += '<td>';
+            html_data += `<button type="button" class="btn btn-sm btn-warning me-1">Edit</button>`;
+            html_data += `<button type="button" class="btn btn-sm btn-danger me-1" onclick="deleteUser(${user.id_user})">Hapus</button>`;
+            html_data += `<button type="button" class="btn btn-sm btn-info">Reset Password</button>`;
+            html_data += '</td>';
+            html_data += '</tr>';
+        });
+        document.getElementById('user-table-body').innerHTML = html_data;
+    }
     async function saveUser(event) {
         event.preventDefault();
         const username = document.getElementById('username').value
@@ -130,6 +139,28 @@
             return SwalAlert.warning('Terjadi kesalahan', responseSaveUser.message)
         }
         SwalAlert.success(responseSaveUser.message)
+        setTimeout(() => {
+            Swal.close()
+            window.location.href = '/attendance/views/user.php';
+        }, 1000);
+    }
+    async function deleteUser(idUser) {
+        if(!idUser) {
+            return SwalAlert.warning('Terjadi kesalahan!', 'ID user tidak ditemukan')
+        }
+        const responseDeleteUser = await fetch('/attendance/api/user.php/user', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                idUser: idUser,
+            })
+        }).then(response => response.json())
+        if(!responseDeleteUser.success) {
+            return SwalAlert.warning('Terjadi kesalahan', responseDeleteUser.message)
+        }
+        SwalAlert.success(responseDeleteUser.message)
         setTimeout(() => {
             Swal.close()
             window.location.href = '/attendance/views/user.php';

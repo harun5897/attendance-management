@@ -2,9 +2,16 @@
     require_once '../databases/database.php';
     class UserController {
         public function getUser() {
+            $database = new Database();
+            $conn = $database->connect();
+            $query = "SELECT * FROM tb_users";
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $database->disconnect();
             return [
                 'success' => true,
-                'data' => '',
+                'data' => $users,
                 'message' => 'Berhasil'
             ];
         }
@@ -36,7 +43,7 @@
                     'message' => 'Username, email, dan role harus memiliki panjang 5-20 karakter'
                 ];
             }
-             //Process to database
+            //Process to database
             $database = new Database();
             $conn = $database->connect();
             $query = "INSERT INTO tb_users (username, email, password, role) VALUES (:username, :email, :password, :role)";
@@ -73,11 +80,36 @@
                 'message' => 'Berhasil'
             ];
         }
-        public function deleteUser() {
+        public function deleteUser($requestBody) {
+              // Validation
+            if(empty($requestBody['idUser'])) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'ID user tidak ditemukan'
+                ];
+            }
+            //Process to database
+            $database = new Database();
+            $conn = $database->connect();
+            $query = "DELETE FROM tb_users WHERE id_user = :id_user";
+            $stmt = $conn->prepare($query);
+            $stmt->bindValue(':id_user', $requestBody['idUser']);
+            $responseDeleteUser = $stmt->execute();
+            $database->disconnect();
+            // Response error after proses data from database
+            if (!$responseDeleteUser) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Gagal menghapus data user'
+                ];
+            }
+             // Response success after proses data from database
             return [
                 'success' => true,
                 'data' => '',
-                'message' => 'Berhasil'
+                'message' => 'Berhasil menghapus user'
             ];
         }
     }
