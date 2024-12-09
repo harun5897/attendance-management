@@ -23,7 +23,10 @@
         <div class="vh-100 d-flex">
             <?php include_once '../components/Sidebar.php'; ?>
             <div class="w-100">
-                <h1>Content</h1>
+                <br><br><br>
+                <div id="content-page-views">
+                    <h1>Data Pengguna</h1>
+                </div>
             </div>
         </div>
     </div>
