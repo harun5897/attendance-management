@@ -2,7 +2,7 @@
     <br><br><br>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
-        onclick="window.location.href='#';"
+        onclick="window.location.href='/attendance/views/user.php';"
         tabindex="0"
         role="button"
     >
@@ -10,7 +10,7 @@
     </div>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
-        onclick="window.location.href='#';"
+        onclick="window.location.href='/attendance/views/employee.php';"
         tabindex="0"
         role="button"
     >
@@ -18,7 +18,7 @@
     </div>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
-        onclick="window.location.href='#';"
+        onclick="window.location.href='/attendance/views/attandance.php';"
         tabindex="0"
         role="button"
     >
