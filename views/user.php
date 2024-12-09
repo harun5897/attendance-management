@@ -19,32 +19,48 @@
         <input id="session_username" type="hidden" value="<?=$_SESSION['username']?>">
         <input id="session_email" type="hidden" value="<?=$_SESSION['email']?>">
 
-        <nav class="navbar navbar-expand-lg bg-secondary fixed-top shadow-lg">
-            <div class="container-fluid">
-                <a class="navbar-brand text-white-50" href="#">
-                    <span class="">PT. Sanden Electronics Indonesia</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-        </nav>
+        <?php include_once '../components/Navbar.php'; ?>
         <div class="vh-100 d-flex">
             <div id="sidebar" class="w-25 border-end border-2 shadow-lg">
-                <h1>Side Bar</h1>
-                <div class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black">
+                <br><br><br>
+                <div
+                    class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
+                    onclick="window.location.href='#';"
+                    tabindex="0"
+                    role="button"
+                >
                     Data Pengguna
                 </div>
-                <div class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black">
+                <div
+                    class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
+                    onclick="window.location.href='#';"
+                    tabindex="0"
+                    role="button"
+                >
                     Data Karyawan
                 </div>
-                <div class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black">
+                <div
+                    class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
+                    onclick="window.location.href='#';"
+                    tabindex="0"
+                    role="button"
+                >
                     Data Absensi
                 </div>
-                <div class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black">
+                <div
+                    class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
+                    onclick="window.location.href='#';"
+                    tabindex="0"
+                    role="button"
+                >
                     Laporan
                 </div>
-                <div class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black" onclick="logout()" tabindex="0" role="button">
+                <div
+                    class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
+                    onclick="logout()"
+                    tabindex="0"
+                    role="button"
+                >
                     Keluar
                 </div>
             </div>
