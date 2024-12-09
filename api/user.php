@@ -17,7 +17,7 @@
             break;
         case 'POST_/user':
             $requestBody = json_decode(file_get_contents('php://input'), true);
-            echo json_encode($user->createUser());
+            echo json_encode($user->createUser($requestBody));
             break;
         case 'PUT_/user':
             $requestBody = json_decode(file_get_contents('php://input'), true);
