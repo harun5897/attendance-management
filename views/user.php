@@ -9,19 +9,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/sweetalert2/dist/sweetalert2.min.css">
     <title>Attendance PT. Sanden</title>
 </head>
 <body>
-    <style>
-        #sidebar .sidebar-menu {
-            cursor: pointer;
-        }
-        #sidebar .sidebar-menu:hover {
-            background-color: white;
-        }
-    </style>
     <div id="page-user">
         <input id="session_id_user" type="hidden" value="<?=$_SESSION['id_user']?>">
         <input id="session_username" type="hidden" value="<?=$_SESSION['username']?>">
@@ -64,6 +56,7 @@
 <script src="../assets/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/@popperjs/core/dist/umd/popper.min.js"></script>
 <script src="../assets/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="../utils/swalAlert.js"></script>
 <script>
     async function logout() {
         const idUser = document.getElementById('session_id_user').value
@@ -71,7 +64,7 @@
         const email =  document.getElementById('session_email').value
 
         if(!idUser || !username || !email) {
-            return warningAlert('Terjadi kesalahan', 'Syarat untuk logout tidak lengkap, silahkan ulangi beberapa saat lagi.')
+            return SwalAlert.warning('Terjadi kesalahan', 'Syarat untuk logout tidak lengkap, silahkan ulangi beberapa saat lagi.')
         }
         const responseLogout = await fetch('http://localhost/attendance/api/auth.php/logout', {
             method: 'POST',
@@ -85,29 +78,13 @@
             })
         }).then(response => response.json())
         if(!responseLogout.success) {
-            return warningAlert('Terjadi kesalahan', responseLogin.message)
+            return SwalAlert.warning('Terjadi kesalahan', responseLogin.message)
         }
-        successAlert(responseLogout.message)
+        SwalAlert.success(responseLogout.message)
         setTimeout(() => {
             Swal.close()
             window.location.href = '/attendance/index.php';
         }, 1000);
-    }
-    function warningAlert(title, text) {
-        Swal.fire({
-            title: title,
-            text: text,
-            icon: "warning"
-        });
-        return
-    }
-    function successAlert(title, text) {
-        Swal.fire({
-            title: title,
-            text: text,
-            icon: "success"
-        });
-        return
     }
 </script>
 </body>

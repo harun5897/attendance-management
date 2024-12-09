@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/main.css">
     <link rel="stylesheet" href="./assets/sweetalert2/dist/sweetalert2.min.css">
     <title>Attendance PT. Sanden</title>
 </head>
@@ -41,6 +41,7 @@
 <script src="./assets/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="./assets/@popperjs/core/dist/umd/popper.min.js"></script>
 <script src="./assets/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="./utils/swalAlert.js"></script>
 <script>
     async function login (event) {
         event.preventDefault();
@@ -49,10 +50,10 @@
         const password = document.getElementById('password').value
 
         if(!email) {
-            return warningAlert('Data tidak lengkap!', 'Data email atau username wajib di isi.')
+            return SwalAlert.warning('Data tidak lengkap!', 'Data email atau username wajib di isi.')
         }
         if(!email) {
-            return warningAlert('Data tidak lengkap!', 'Data password wajib di isi.')
+            return SwalAlert.warning('Data tidak lengkap!', 'Data password wajib di isi.')
         }
 
         const responseLogin = await fetch('http://localhost/attendance/api/auth.php/login', {
@@ -68,29 +69,13 @@
         }).then(response => response.json())
 
         if(!responseLogin.success) {
-            return warningAlert('Terjadi kesalahan', responseLogin.message)
+            return SwalAlert.warning('Terjadi kesalahan', responseLogin.message)
         }
-        successAlert(responseLogin.message)
+        SwalAlert.success(responseLogin.message)
         setTimeout(() => {
             Swal.close()
             window.location.href = '/attendance/views/user.php';
         }, 1000);
-    }
-    function warningAlert(title, text) {
-        Swal.fire({
-            title: title,
-            text: text,
-            icon: "warning"
-        });
-        return
-    }
-    function successAlert(title, text) {
-        Swal.fire({
-            title: title,
-            text: text,
-            icon: "success"
-        });
-        return
     }
 </script>
 </body>

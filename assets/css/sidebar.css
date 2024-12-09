@@ -1,0 +1,6 @@
+#sidebar .sidebar-menu {
+    cursor: pointer;
+}
+#sidebar .sidebar-menu:hover {
+    background-color: white;
+}
