@@ -21,7 +21,7 @@
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             $database->disconnect();
             // Response error after proses data from database
-            if (!$user) {
+            if (!$user || !password_verify($requestBody['password'], $user['password'])) {
                 return [
                     'success' => false,
                     'data' => null,
