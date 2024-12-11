@@ -11,21 +11,29 @@
     $routePath = str_replace('/attendance/api/user.php', '', $fullPath);
 
     switch ("{$requestMethod}_{$routePath}") {
-        case 'GET_/user':
+        case 'POST_/get-user':
             $requestBody = json_decode(file_get_contents('php://input'), true);
-            echo json_encode($user->getUser());
+            echo json_encode($user->getUser($requestBody));
             break;
-        case 'POST_/user':
+        case 'POST_/detail-user':
+            $requestBody = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($user->getDetailUser($requestBody));
+            break;
+        case 'POST_/create-user':
             $requestBody = json_decode(file_get_contents('php://input'), true);
             echo json_encode($user->createUser($requestBody));
             break;
-        case 'PUT_/user':
+        case 'PUT_/update-user':
             $requestBody = json_decode(file_get_contents('php://input'), true);
-            echo json_encode($user->updateUser());
+            echo json_encode($user->updateUser($requestBody));
             break;
-        case 'DELETE_/user':
+        case 'DELETE_/delete-user':
             $requestBody = json_decode(file_get_contents('php://input'), true);
             echo json_encode($user->deleteUser($requestBody));
+            break;
+        case 'POST_/reset-password':
+            $requestBody = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($user->resetPassword($requestBody));
             break;
         default:
             echo json_encode([
