@@ -6,7 +6,7 @@
                 return [
                     'success' => false,
                     'data' => null,
-                    'message' => 'ID user tidak ditemukan'
+                    'message' => 'page tidak ditemukan'
                 ];
             }
             //Process to database
