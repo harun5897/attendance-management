@@ -182,11 +182,97 @@
                 'message' => 'Berhasil membuat data karyawan'
             ];
         }
-        public function updateEmployee() {
+        public function updateEmployee($requestBody) {
+            // Validation
+            if (empty($requestBody['codeEmployee']) || empty($requestBody['nameEmployee']) || empty($requestBody['fingerprint']) || empty($requestBody['dateJoin']) || empty($requestBody['departement'])) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Kode karyawan, nama, ID fingerprint, tanggal join dan departemen wajib diisi'
+                ];
+            }
+            if (strlen($requestBody['nameEmployee']) < 5 || strlen($requestBody['nameEmployee']) > 30) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Nama karyawan harus memiliki panjang 5-30 karakter'
+                ];
+            }
+            if (!preg_match('/^[a-zA-Z.\s]+$/', $requestBody['nameEmployee'])) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Nama karyawan hanya boleh mengandung huruf, spasi, dan karakter titik (.)'
+                ];
+            }
+            if (!preg_match('/\d{3,10}$/', $requestBody['fingerprint'])) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'ID fingerprint harus berupa angka 1-9 dan memiliki panjang 3-10 karakter.'
+                ];
+            }
+            if (preg_match('/^0+$/', $requestBody['fingerprint'])) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'ID fingerprint tidak boleh bernilai 0'
+                ];
+            }
+            // Database connection
+            $database = new Database();
+            $conn = $database->connect();
+            // Check if code_employee exists
+            $checkCodeQuery = "SELECT * FROM tb_employee WHERE code_employee = :code_employee";
+            $checkCodeStmt = $conn->prepare($checkCodeQuery);
+            $checkCodeStmt->bindValue(':code_employee', $requestBody['codeEmployee']);
+            $checkCodeStmt->execute();
+            $employeeData = $checkCodeStmt->fetch(PDO::FETCH_ASSOC);
+            if (!$employeeData) {
+                $database->disconnect();
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Kode karyawan tidak ditemukan'
+                ];
+            }
+            // Check if fingerprint exists for another employee
+            $checkFingerprintQuery = "SELECT COUNT(*) FROM tb_employee WHERE fingerprint = :fingerprint AND code_employee != :code_employee";
+            $checkFingerprintStmt = $conn->prepare($checkFingerprintQuery);
+            $checkFingerprintStmt->bindValue(':fingerprint', $requestBody['fingerprint']);
+            $checkFingerprintStmt->bindValue(':code_employee', $requestBody['codeEmployee']);
+            $checkFingerprintStmt->execute();
+            if ($checkFingerprintStmt->fetchColumn() > 0) {
+                $database->disconnect();
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Fingerprint karyawan sudah ada, harap gunakan fingerprint lain'
+                ];
+            }
+            // Update employee data in database
+            $updateQuery = "UPDATE tb_employee SET name_employee = :name_employee, fingerprint = :fingerprint, date_join = :date_join, departement = :departement WHERE code_employee = :code_employee";
+            $updateStmt = $conn->prepare($updateQuery);
+            $updateStmt->bindValue(':name_employee', strtoupper($requestBody['nameEmployee']));
+            $updateStmt->bindValue(':fingerprint', $requestBody['fingerprint']);
+            $updateStmt->bindValue(':date_join', $requestBody['dateJoin']);
+            $updateStmt->bindValue(':departement', $requestBody['departement']);
+            $updateStmt->bindValue(':code_employee', $requestBody['codeEmployee']);
+            $responseUpdateEmployee = $updateStmt->execute();
+            $database->disconnect();
+            // Response after process to database
+            if (!$responseUpdateEmployee) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Gagal mengupdate data ke database'
+                ];
+            }
+            // Response success after update
             return [
                 'success' => true,
-                'data' => null,
-                'message' => 'Berhasil melakukan update data karyawan'
+                'data' => $requestBody,
+                'message' => 'Berhasil mengupdate data karyawan'
             ];
         }
         public function deleteEmployee($requestBody) {
