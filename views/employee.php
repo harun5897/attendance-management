@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <form action="" onsubmit="return updateEmployee(event)">
-                                        <input id="edit-code-employee" class="form-control mb-3" type="text" placeholder="Masukan kode karyawan" aria-label="code-employee">
+                                        <input id="edit-code-employee" class="form-control mb-3" type="text" placeholder="Masukan kode karyawan" aria-label="code-employee" disabled>
                                         <input id="edit-name-employee" class="form-control mb-3" type="text" placeholder="Masukan nama karyawan" aria-label="name-employee">
                                         <input id="edit-fingerprint" class="form-control mb-3" type="text" placeholder="Masukan ID fingerprint" aria-label="fingerprint">
                                         <input id="edit-date-join" class="form-control mb-3" type="date" placeholder="Masukan tanggal join" aria-label="date-join">
@@ -281,66 +281,50 @@
         document.getElementById('edit-date-join').value = detailEmployee.date_join
         document.getElementById('edit-departement').value = detailEmployee.departement
     }
-    async function updateUser(event) {
+    async function updateEmployee(event) {
         event.preventDefault();
-        const idUser = document.getElementById('edit-id-user').value
-        const username = document.getElementById('edit-username').value
-        const email = document.getElementById('edit-email').value
-        const role =  document.getElementById('edit-role').value
+        const codeEmployee = document.getElementById('edit-code-employee').value
+        const nameEmployee = document.getElementById('edit-name-employee').value
+        const fingerprint =  document.getElementById('edit-fingerprint').value
+        const dateJoin =  document.getElementById('edit-date-join').value
+        const departement =  document.getElementById('edit-departement').value
 
-        if(!idUser) {
-            return SwalAlert.warning('Terjadi kesalahan!', 'ID tidak ditemukan.')
+        if(!codeEmployee) {
+            return SwalAlert.warning('Data tidak lengkap!', 'Data kode karyawan wajib di isi.')
         }
-        if(!username) {
-            return SwalAlert.warning('Data tidak lengkap!', 'Data username wajib di isi.')
+        if(!nameEmployee) {
+            return SwalAlert.warning('Data tidak lengkap!', 'Data nama karyawan wajib di isi.')
         }
-        if(!email) {
-            return SwalAlert.warning('Data tidak lengkap!', 'Data email wajib di isi.')
+        if(!fingerprint) {
+            return SwalAlert.warning('Data tidak lengkap!', 'Data ID fingerprint wajib di isi.')
         }
-        if(!role) {
-            return SwalAlert.warning('Data tidak lengkap!', 'Data role wajib di isi.')
+        if(!dateJoin) {
+            return SwalAlert.warning('Data tidak lengkap!', 'Data tanggal join wajib di isi.')
         }
-        const responseUpdateUser = await fetch('/attendance/api/user.php/update-user', {
+        if(!departement) {
+            return SwalAlert.warning('Data tidak lengkap!', 'Data departemen wajib di isi.')
+        }
+        const responseSaveEmployee = await fetch('/attendance/api/employee.php/update-employee', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                idUser: idUser,
-                username: username,
-                email: email,
-                role: role
+                codeEmployee: codeEmployee,
+                nameEmployee: nameEmployee,
+                fingerprint: fingerprint,
+                dateJoin: dateJoin,
+                departement: departement
             })
         }).then(response => response.json())
-        if(!responseUpdateUser.success) {
-            return SwalAlert.warning('Terjadi kesalahan', responseUpdateUser.message)
+        if(!responseSaveEmployee.success) {
+            return SwalAlert.warning('Terjadi kesalahan', responseSaveEmployee.message)
         }
-        const modalElement = document.getElementById("modal-edit-user");
-        const modal = bootstrap.Modal.getInstance(modalElement);
-        modal.hide();
-        SwalAlert.success(responseUpdateUser.message)
+        SwalAlert.success(responseSaveEmployee.message)
         setTimeout(() => {
             Swal.close()
-            window.location.href = '/attendance/views/user.php';
+            window.location.href = '/attendance/views/employee.php';
         }, 1000);
-    }
-    async function resetPassword(idUser) {
-        if(!idUser) {
-            return SwalAlert.warning('Terjadi kesalahan!', 'ID tidak ditemukan.')
-        }
-        const responseResetPassword = await fetch('/attendance/api/user.php/reset-password', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                idUser: idUser,
-            })
-        }).then(response => response.json())
-        if(!responseResetPassword.success) {
-            return SwalAlert.warning('Terjadi kesalahan', responseResetPassword.message)
-        }
-        SwalAlert.success(responseResetPassword.message)
     }
 </script>
 </body>
