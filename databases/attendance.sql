@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 11, 2024 at 05:41 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Dec 17, 2024 at 06:29 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,21 @@ SET time_zone = "+00:00";
 --
 -- Database: `attendance`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_attendance`
+--
+
+CREATE TABLE `tb_attendance` (
+  `id_attendance` int(11) NOT NULL,
+  `code_employee` int(11) NOT NULL,
+  `time` varchar(50) DEFAULT NULL,
+  `overtime` varchar(50) DEFAULT NULL,
+  `meal_box` varchar(50) DEFAULT NULL,
+  `date_attendance` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -40,8 +55,9 @@ CREATE TABLE `tb_employee` (
 --
 
 INSERT INTO `tb_employee` (`code_employee`, `name_employee`, `fingerprint`, `date_join`, `departement`) VALUES
-(210213, 'MOLLY PHANG', 1777, '2021-02-04', 'TM'),
-(241003, 'VIRA YUNITA', 2209, '2024-10-21', 'TM');
+(202414, ' FELASTRI', 2178, '2024-07-10', 'TM'),
+(210213, ' MOLLY PHANG', 1777, '2021-02-04', 'TM'),
+(241003, ' VIRA YUNITA', 2209, '2024-10-21', 'TM');
 
 -- --------------------------------------------------------
 
@@ -85,6 +101,12 @@ INSERT INTO `tb_users` (`id_user`, `username`, `email`, `password`, `role`) VALU
 --
 
 --
+-- Indexes for table `tb_attendance`
+--
+ALTER TABLE `tb_attendance`
+  ADD PRIMARY KEY (`id_attendance`);
+
+--
 -- Indexes for table `tb_employee`
 --
 ALTER TABLE `tb_employee`
@@ -99,6 +121,12 @@ ALTER TABLE `tb_users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `tb_attendance`
+--
+ALTER TABLE `tb_attendance`
+  MODIFY `id_attendance` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `tb_users`
