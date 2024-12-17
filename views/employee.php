@@ -46,7 +46,7 @@
                                         <input id="date-join" class="form-control mb-3" type="date" placeholder="Masukan tanggal join" aria-label="date-join">
                                         <select id="departement" class="form-select" aria-label="Default select example">
                                             <option value="">Pilih Departemen</option>
-                                            <option value="M2">TM</option>
+                                            <option value="M2">M2</option>
                                             <option value="TM">TM</option>
                                             <option value="SM">SM</option>
                                             <option value="QA">QA</option>
@@ -85,7 +85,7 @@
                                         <input id="edit-date-join" class="form-control mb-3" type="date" placeholder="Masukan tanggal join" aria-label="date-join">
                                         <select id="edit-departement" class="form-select" aria-label="Default select example">
                                             <option value="">Pilih Departemen</option>
-                                            <option value="M2">TM</option>
+                                            <option value="M2">M2</option>
                                             <option value="TM">TM</option>
                                             <option value="SM">SM</option>
                                             <option value="QA">QA</option>
@@ -164,7 +164,7 @@
         }).then(response => response.json())
         let html_data = '';
         if (responseGetEmployee.data.length == 0 || !responseGetEmployee.success) {
-            html_data += '<tr><td colspan="5" class="text-center">Data tidak tersedia</td></tr>';
+            html_data += '<tr><td colspan="7" class="text-center">Data tidak tersedia</td></tr>';
             document.getElementById('employee-table-body').innerHTML = html_data;
             return
         }

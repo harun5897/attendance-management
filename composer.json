@@ -1,0 +1,7 @@
+{
+    "name": "admin/attendance",
+    "description": "The attendance project about simple crud with mvc sturcture and clean code implementation",
+    "require": {
+        "phpoffice/phpspreadsheet": "^3.6"
+    }
+}
