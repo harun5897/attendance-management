@@ -26,7 +26,7 @@
     </div>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
-        onclick="window.location.href='#';"
+        onclick="window.location.href='/attendance/views/report.php';"
         tabindex="0"
         role="button"
     >
