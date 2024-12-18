@@ -15,6 +15,10 @@
 </head>
 <body>
     <div id="page-user">
+        <input id="session_id_user" type="hidden" value="<?=$_SESSION['id_user']?>">
+        <input id="session_username" type="hidden" value="<?=$_SESSION['username']?>">
+        <input id="session_email" type="hidden" value="<?=$_SESSION['email']?>">
+        
         <?php include_once '../components/Navbar.php'; ?>
         <div class="vh-100 d-flex">
             <?php include_once '../components/Sidebar.php'; ?>
