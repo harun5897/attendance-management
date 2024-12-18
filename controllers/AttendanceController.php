@@ -1,7 +1,4 @@
 <?php
-
-use PhpOffice\PhpSpreadsheet\Worksheet\Row;
-
 require_once '../databases/database.php';
 require_once '../vendor/autoload.php';
 
