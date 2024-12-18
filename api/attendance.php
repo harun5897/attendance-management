@@ -30,6 +30,14 @@
             $requestBody = json_decode(file_get_contents('php://input'), true);
             echo json_encode($attendance->deleteAttendanceActual($requestBody));
             break;
+        case 'POST_/detail-attendance-actual':
+            $requestBody = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($attendance->getDetailAttendanceActual($requestBody));
+            break;
+        case 'POST_/update-attendance-actual':
+            $requestBody = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($attendance->updateAttendanceActual($requestBody));
+            break;
         default:
             echo json_encode([
                 'success' => false,
