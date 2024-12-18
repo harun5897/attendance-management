@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 17, 2024 at 06:29 PM
+-- Generation Time: Dec 18, 2024 at 06:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,6 +35,15 @@ CREATE TABLE `tb_attendance` (
   `meal_box` varchar(50) DEFAULT NULL,
   `date_attendance` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tb_attendance`
+--
+
+INSERT INTO `tb_attendance` (`id_attendance`, `code_employee`, `time`, `overtime`, `meal_box`, `date_attendance`) VALUES
+(30, 210213, '07:56', '2', 'siang', '2024-12-02'),
+(31, 202414, '07:40', '2', 'malam', '2024-12-02'),
+(32, 241003, '07:47', NULL, NULL, '2024-12-02');
 
 -- --------------------------------------------------------
 
@@ -126,7 +135,7 @@ ALTER TABLE `tb_users`
 -- AUTO_INCREMENT for table `tb_attendance`
 --
 ALTER TABLE `tb_attendance`
-  MODIFY `id_attendance` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_attendance` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `tb_users`
