@@ -166,6 +166,42 @@
             </div>
         </div>
     </div>
+    <!-- Modal Detail Attendance Actual-->
+    <div class="modal fade" id="modal-detail-attendance-actual" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" id="exampleModalLabel">Form Detail Absensi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" onsubmit="return updateAttendanceActual(event)">
+                        <input id="code-employee-actual" class="form-control mb-3" type="text" placeholder="Masukan kode karyawan" aria-label="code-employee" disabled>
+                        <input id="name-employee-actual" class="form-control mb-3" type="text" placeholder="Masukan nama karyawan" aria-label="name-employee" disabled>
+                        <input id="time-actual" class="form-control mb-3" type="text" placeholder="Masukan jam masuk karyawan" aria-label="fingerprint">
+                        <select id="overtime-actual" class="form-select mb-3" aria-label="Default select example">
+                            <option value="">Pilih jam overtime</option>
+                            <option value="1">1 Jam</option>
+                            <option value="2">2 Jam</option>
+                            <option value="3">3 Jam</option>
+                            <option value="4">4 Jam</option>
+                            <option value="5">5 Jam</option>
+                        </select>
+                        <select id="meal-box-actual" class="form-select mb-3" aria-label="Default select example">
+                            <option value="">Pilih meal box</option>
+                            <option value="siang">siang</option>
+                            <option value="malam">malam</option>
+                        </select>
+                        <input id="date-attendance-actual" class="form-control mb-3" type="date" aria-label="date-attendance-actual">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-warning" onclick="updateAttendanceActual(event)">Simpan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 <script src="../assets/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/@popperjs/core/dist/umd/popper.min.js"></script>
 <script src="../assets/sweetalert2/dist/sweetalert2.min.js"></script>
@@ -173,11 +209,13 @@
 
 <script>
     const myModal = new bootstrap.Modal(document.getElementById("modal-detail-attendance"));
+    const myModalActual = new bootstrap.Modal(document.getElementById("modal-detail-attendance-actual"));
     let stateAttendanceFromExcel = [];
     let stateDateAttendance = '';
     let totalPages = 0;
     let currentPage = 1;
     let pageSize = 8;
+    
     getAttendanceActual()
     async function uploadAttendance() {
         const fileAttendance = document.getElementById('file-attendance')
@@ -396,7 +434,7 @@
             html_data += `<td class="text-center">${attendance.overtime ? attendance.overtime+ " Jam": "-"}</td>`;
             html_data += `<td class="text-center">${attendance.meal_box ?? "-"}</td>`;
             html_data += '<td>';
-            html_data += `<button type="button" class="btn btn-sm btn-warning me-1" style="font-size: 12px;" onclick="deleteAttendanceActual(${attendance.code_employee})">Edit</button>`;
+            html_data += `<button type="button" class="btn btn-sm btn-warning me-1" style="font-size: 12px;" onclick="detailAttendanceActual(${attendance.code_employee})">Edit</button>`;
             html_data += `<button type="button" class="btn btn-sm btn-danger me-1" style="font-size: 12px;" onclick="deleteAttendanceActual(${attendance.code_employee})">Hapus</button>`;
             html_data += '</td>';
             html_data += '</tr>';
@@ -423,6 +461,67 @@
             return SwalAlert.warning('Terjadi kesalahan', responseDeleteAttendanceActual.message)
         }
         SwalAlert.success(responseDeleteAttendanceActual.message)
+        setTimeout(() => {
+            Swal.close()
+            window.location.href = '/attendance/views/attendance.php';
+        }, 1000);
+    }
+    async function detailAttendanceActual(codeEmployee) {
+        if(!codeEmployee) {
+            return SwalAlert.warning('Terjadi kesalahan!', 'Kode karyawan tidak ditemukan')
+        }
+        const responseDetailAttendanceActual = await fetch('/attendance/api/attendance.php/detail-attendance-actual', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                codeEmployee: codeEmployee,
+            })
+        }).then(response => response.json())
+        if(!responseDetailAttendanceActual.success) {
+            return SwalAlert.warning('Terjadi kesalahan', responseDetailAttendanceActual.message)
+        }
+        console.log(responseDetailAttendanceActual.data)
+        myModalActual.show()
+        document.getElementById('code-employee-actual').value = responseDetailAttendanceActual.data[0].code_employee
+        document.getElementById('name-employee-actual').value = responseDetailAttendanceActual.data[0].name_employee
+        document.getElementById('time-actual').value = responseDetailAttendanceActual.data[0].time
+        document.getElementById('overtime-actual').value = !responseDetailAttendanceActual.data[0].overtime ? '' : responseDetailAttendanceActual.data[0].overtime
+        document.getElementById('meal-box-actual').value = !responseDetailAttendanceActual.data[0].meal_box ? '' : responseDetailAttendanceActual.data[0].meal_box
+        document.getElementById('date-attendance-actual').value = responseDetailAttendanceActual.data[0].date_attendance
+    }
+    async function updateAttendanceActual() {
+        event.preventDefault();
+        const codeEmployee = document.getElementById('code-employee-actual').value
+        const nameEmployee = document.getElementById('name-employee-actual').value
+        const time = document.getElementById('time-actual').value
+        const overtime = document.getElementById('overtime-actual').value
+        const mealBox = document.getElementById('meal-box-actual').value
+        const dateAttendance = document.getElementById('date-attendance-actual').value
+        if(!codeEmployee) {
+            return SwalAlert.warning('Terjadi kesalahan!', 'Kode karyawan tidak ditemukan')
+        }
+        if(!nameEmployee) {
+            return SwalAlert.warning('Terjadi kesalahan!', 'Nama karyawan wajib diisi')
+        }
+        const responseUpdateAttendanceActual = await fetch('/attendance/api/attendance.php/update-attendance-actual', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                codeEmployee: codeEmployee,
+                time: time,
+                overtime: overtime,
+                mealbox: mealBox,
+                dateAttendance: dateAttendance
+            })
+        }).then(response => response.json())
+        if(!responseUpdateAttendanceActual.success) {
+            return SwalAlert.warning('Terjadi kesalahan', responseUpdateAttendanceActual.message)
+        }
+        SwalAlert.success(responseUpdateAttendanceActual.message)
         setTimeout(() => {
             Swal.close()
             window.location.href = '/attendance/views/attendance.php';
