@@ -307,5 +307,163 @@ class AttendanceController {
             ];
         }
     }
+    public function getDetailAttendanceActual($requestBody) {
+        // Validasi input
+        if (empty($requestBody['codeEmployee'])) {
+            return [
+                'success' => false,
+                'data' => null,
+                'message' => 'Kode karyawan tidak ditemukan'
+            ];
+        }
+        // Koneksi ke database
+        $database = new Database();
+        $conn = $database->connect();
+        try {
+            // Query untuk mengambil data dari kedua tabel
+            $query = "
+                SELECT
+                    e.code_employee,
+                    e.name_employee,
+                    a.time,
+                    a.overtime,
+                    a.meal_box,
+                    a.date_attendance
+                FROM
+                    tb_employee e
+                LEFT JOIN
+                    tb_attendance a
+                ON
+                    e.code_employee = a.code_employee
+                WHERE
+                    e.code_employee = :code_employee
+            ";
+            $stmt = $conn->prepare($query);
+            $stmt->bindValue(':code_employee', $requestBody['codeEmployee'], PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $database->disconnect();
+            // Jika data tidak ditemukan
+            if (empty($result)) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Data tidak ditemukan untuk kode karyawan tersebut'
+                ];
+            }
+            // Jika data ditemukan
+            return [
+                'success' => true,
+                'data' => $result,
+                'message' => 'Berhasil mengambil detail data karyawan dengan kehadiran'
+            ];
+        } catch (Exception $e) {
+            // Tangani error jika terjadi exception
+            $database->disconnect();
+            return [
+                'success' => false,
+                'data' => null,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ];
+        }
+    }
+    public function updateAttendanceActual($requestBody) {
+        // Validasi input
+        if (empty($requestBody['codeEmployee'])) {
+            return [
+                'success' => false,
+                'data' => null,
+                'message' => 'Kode karyawan tidak ditemukan'
+            ];
+        }
+        if (
+            empty($requestBody['time']) ||
+            empty($requestBody['overtime']) ||
+            empty($requestBody['mealbox']) ||
+            empty($requestBody['dateAttendance'])
+        ) {
+            return [
+                'success' => false,
+                'data' => null,
+                'message' => 'Semua data wajib diisi: time, overtime, mealbox, dan dateAttendance'
+            ];
+        }
+        // Validasi panjang karakter
+        if (
+            strlen($requestBody['time']) != 5 || // Format HH:mm (misalnya 07:30)
+            strlen($requestBody['overtime']) < 1 || strlen($requestBody['overtime']) > 10 ||
+            strlen($requestBody['mealbox']) < 1 || strlen($requestBody['mealbox']) > 10 ||
+            strlen($requestBody['dateAttendance']) != 10 // Format YYYY-MM-DD
+        ) {
+            return [
+                'success' => false,
+                'data' => null,
+                'message' => 'Validasi panjang karakter tidak sesuai. Periksa input Anda.'
+            ];
+        }
+        // Validasi format waktu (HH:mm)
+        if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $requestBody['time'])) {
+            return [
+                'success' => false,
+                'data' => $requestBody['time'],
+                'message' => 'Format waktu tidak sesuai. Gunakan format HH:mm'
+            ];
+        }
+        // Validasi format tanggal (YYYY-MM-DD)
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $requestBody['dateAttendance'])) {
+            return [
+                'success' => false,
+                'data' => $requestBody['dateAttendance'],
+                'message' => 'Format tanggal tidak sesuai. Gunakan format YYYY-MM-DD'
+            ];
+        }
+        // Koneksi ke database
+        $database = new Database();
+        $conn = $database->connect();
+        try {
+            // Query untuk update data
+            $query = "
+                UPDATE tb_attendance
+                SET
+                    time = :time,
+                    overtime = :overtime,
+                    meal_box = :mealbox,
+                    date_attendance = :dateAttendance
+                WHERE
+                    code_employee = :codeEmployee
+            ";
+            $stmt = $conn->prepare($query);
+            $stmt->bindValue(':time', $requestBody['time'], PDO::PARAM_STR);
+            $stmt->bindValue(':overtime', $requestBody['overtime'], PDO::PARAM_STR);
+            $stmt->bindValue(':mealbox', $requestBody['mealbox'], PDO::PARAM_STR);
+            $stmt->bindValue(':dateAttendance', $requestBody['dateAttendance'], PDO::PARAM_STR);
+            $stmt->bindValue(':codeEmployee', $requestBody['codeEmployee'], PDO::PARAM_STR);
+            $responseUpdate = $stmt->execute();
+            $database->disconnect();
+            // Jika update gagal
+            if (!$responseUpdate) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Gagal melakukan update data kehadiran'
+                ];
+            }
+            // Jika update berhasil
+            return [
+                'success' => true,
+                'data' => null,
+                'message' => 'Berhasil melakukan update data kehadiran'
+            ];
+        } catch (Exception $e) {
+            // Tangani error
+            $database->disconnect();
+            return [
+                'success' => false,
+                'data' => null,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ];
+        }
+    }
+    
 }
 ?>
