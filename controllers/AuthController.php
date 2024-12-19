@@ -33,6 +33,8 @@
             $_SESSION['id_user'] = $user['id_user'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['email'] = $user['email'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['departement'] = $user['departement'];
             // Response success after proses data from database
             return [
                 'success' => true,

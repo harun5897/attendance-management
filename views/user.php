@@ -42,11 +42,27 @@
                                     <form action="" onsubmit="return saveUser(event)">
                                         <input id="username" class="form-control mb-3" type="text" placeholder="Masukan username" aria-label="username">
                                         <input id="email" class="form-control mb-3" type="text" placeholder="Masukan email" aria-label="email">
-                                        <select id="role" class="form-select" aria-label="Default select example">
+                                        <select id="role" class="form-select mb-3" aria-label="Default select example">
                                             <option value="">Pilih Role</option>
-                                            <option value="admin">Admin</option>
-                                            <option value="leader">Leader</option>
-                                            <option value="manager">Manager</option>
+                                            <option value="ADMIN">Admin</option>
+                                            <option value="LEADER">Leader</option>
+                                            <option value="MANAGER">Manager</option>
+                                        </select>
+                                        <select id="departement" class="form-select" aria-label="Default select example">
+                                            <option value="">Pilih Departemen</option>
+                                            <option value="M2">M2</option>
+                                            <option value="TM">TM</option>
+                                            <option value="SM">SM</option>
+                                            <option value="QA">QA</option>
+                                            <option value="PURCHASING">PURCHASING</option>
+                                            <option value="PRODUCTION">PRODUCTION</option>
+                                            <option value="PACKING">PE</option>
+                                            <option value="ME">ME</option>
+                                            <option value="MCA">MCA</option>
+                                            <option value="M1">M1</option>
+                                            <option value="LOGISTIC">LOGISTIC</option>
+                                            <option value="ADMINISTRATION">ADMINISTRATION</option>
+                                            <option value="ACCOUNTING">ACCOUNTING</option>
                                         </select>
                                 </div>
                                 <div class="modal-footer">
@@ -70,11 +86,27 @@
                                         <input id="edit-id-user" type="hidden">
                                         <input id="edit-username" class="form-control mb-3" type="text" placeholder="Masukan username" aria-label="username">
                                         <input id="edit-email" class="form-control mb-3" type="text" placeholder="Masukan email" aria-label="email">
-                                        <select id="edit-role" class="form-select" aria-label="Default select example">
+                                        <select id="edit-role" class="form-select mb-3" aria-label="Default select example">
                                             <option value="">Pilih Role</option>
-                                            <option value="admin">Admin</option>
-                                            <option value="leader">Leader</option>
-                                            <option value="manager">Manager</option>
+                                            <option value="ADMIN">Admin</option>
+                                            <option value="LEADER">Leader</option>
+                                            <option value="MANAGER">Manager</option>
+                                        </select>
+                                        <select id="edit-departement" class="form-select" aria-label="Default select example">
+                                            <option value="">Pilih Departemen</option>
+                                            <option value="M2">M2</option>
+                                            <option value="TM">TM</option>
+                                            <option value="SM">SM</option>
+                                            <option value="QA">QA</option>
+                                            <option value="PURCHASING">PURCHASING</option>
+                                            <option value="PRODUCTION">PRODUCTION</option>
+                                            <option value="PACKING">PE</option>
+                                            <option value="ME">ME</option>
+                                            <option value="MCA">MCA</option>
+                                            <option value="M1">M1</option>
+                                            <option value="LOGISTIC">LOGISTIC</option>
+                                            <option value="ADMINISTRATION">ADMINISTRATION</option>
+                                            <option value="ACCOUNTING">ACCOUNTING</option>
                                         </select>
                                 </div>
                                 <div class="modal-footer">
@@ -92,6 +124,7 @@
                                 <th scope="col">Username</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Role</th>
+                                <th scope="col">Departemen</th>
                                 <th scope="col" style="width: 280px;">Action</th>
                             </tr>
                         </thead>
@@ -117,6 +150,24 @@
 <script src="../utils/swalAlert.js"></script>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function toggleDepartementVisibility(roleSelectId, departementSelectId) {
+            const roleSelect = document.getElementById(roleSelectId);
+            const departementSelect = document.getElementById(departementSelectId);
+            roleSelect.addEventListener("change", function () {
+                const selectedRole = roleSelect.value.toUpperCase();
+                if (selectedRole === "LEADER") {
+                    departementSelect.style.display = "block";
+                } else {
+                    departementSelect.style.display = "none";
+                    departementSelect.value = "";
+                }
+            });
+            departementSelect.style.display = "none";
+        }
+        toggleDepartementVisibility("role", "departement");
+        toggleDepartementVisibility("edit-role", "edit-departement");
+    });
     getUser()
     async function getUser(navigationPage) {
         const totalPages = document.getElementById('total-pages').value;
@@ -151,6 +202,7 @@
             html_data += `<td>${user.username}</td>`;
             html_data += `<td>${user.email}</td>`;
             html_data += `<td><span class="badge text-bg-success">${user.role}</span></td>`;
+            html_data += `<td><span class="badge text-bg-success">${!user.departement || user.departement == '' ? '-' : user.departement}</span></td>`;
             html_data += '<td>';
             html_data += `<button type="button" class="btn btn-sm btn-warning me-1" style="font-size: 12px;" onclick="getUserDetail(${user.id_user})">Edit</button>`;
             html_data += `<button type="button" class="btn btn-sm btn-danger me-1" style="font-size: 12px;" onclick="deleteUser(${user.id_user})">Hapus</button>`;
@@ -168,6 +220,7 @@
         const username = document.getElementById('username').value
         const email = document.getElementById('email').value
         const role =  document.getElementById('role').value
+        const departement = document.getElementById('departement').value;
 
         if(!username) {
             return SwalAlert.warning('Data tidak lengkap!', 'Data username wajib di isi.')
@@ -178,6 +231,9 @@
         if(!role) {
             return SwalAlert.warning('Data tidak lengkap!', 'Data role wajib di isi.')
         }
+        if (role === "LEADER" && !departement) {
+            return SwalAlert.warning('Data tidak lengkap!', 'Data departemen wajib diisi untuk role LEADER.');
+        }
         const responseSaveUser = await fetch('/attendance/api/user.php/create-user', {
             method: 'POST',
             headers: {
@@ -186,7 +242,8 @@
             body: JSON.stringify({
                 username: username,
                 email: email,
-                role: role
+                role: role,
+                departement: departement ?? null,
             })
         }).then(response => response.json())
         if(!responseSaveUser.success) {
@@ -243,6 +300,14 @@
         document.getElementById('edit-username').value = detailUser.username
         document.getElementById('edit-email').value = detailUser.email
         document.getElementById('edit-role').value = detailUser.role
+        const editDepartement = document.getElementById('edit-departement');
+        if (detailUser.role.toUpperCase() === "LEADER") {
+            editDepartement.style.display = "block";
+            editDepartement.value = detailUser.departement
+        } else {
+            editDepartement.style.display = "none";
+            editDepartement.value = "";
+        }
     }
     async function updateUser(event) {
         event.preventDefault();
@@ -250,6 +315,7 @@
         const username = document.getElementById('edit-username').value
         const email = document.getElementById('edit-email').value
         const role =  document.getElementById('edit-role').value
+        const departement = document.getElementById('edit-departement').value;
 
         if(!idUser) {
             return SwalAlert.warning('Terjadi kesalahan!', 'ID tidak ditemukan.')
@@ -263,6 +329,9 @@
         if(!role) {
             return SwalAlert.warning('Data tidak lengkap!', 'Data role wajib di isi.')
         }
+        if (role === "LEADER" && !departement) {
+            return SwalAlert.warning('Data tidak lengkap!', 'Data departemen wajib diisi untuk role LEADER.');
+        }
         const responseUpdateUser = await fetch('/attendance/api/user.php/update-user', {
             method: 'PUT',
             headers: {
@@ -272,7 +341,8 @@
                 idUser: idUser,
                 username: username,
                 email: email,
-                role: role
+                role: role,
+                departement: departement ?? null
             })
         }).then(response => response.json())
         if(!responseUpdateUser.success) {

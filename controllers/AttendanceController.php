@@ -389,7 +389,7 @@ class AttendanceController {
         if (
             strlen($requestBody['time']) != 5 || // Format HH:mm (misalnya 07:30)
             strlen($requestBody['overtime']) < 1 || strlen($requestBody['overtime']) > 10 ||
-            strlen($requestBody['mealbox']) < 1 || strlen($requestBody['mealbox']) > 10 ||
+            strlen($requestBody['mealbox']) < 1 || strlen($requestBody['mealbox']) > 15 ||
             strlen($requestBody['dateAttendance']) != 10 // Format YYYY-MM-DD
         ) {
             return [

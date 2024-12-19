@@ -103,15 +103,24 @@
                     'message' => 'Username, email, dan role harus memiliki panjang 5-20 karakter'
                 ];
             }
+            if ($requestBody['role'] === 'LEADER' && empty($requestBody['departement'])) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Departemen wajib diisi untuk role LEADER'
+                ];
+            }
             //Process to database
             $database = new Database();
             $conn = $database->connect();
-            $query = "INSERT INTO tb_users (username, email, password, role) VALUES (:username, :email, :password, :role)";
+            $query = "INSERT INTO tb_users (username, email, password, role, departement)
+                        VALUES (:username, :email, :password, :role, :departement)";
             $stmt = $conn->prepare($query);
             $stmt->bindValue(':username', $requestBody['username']);
             $stmt->bindValue(':email', $requestBody['email']);
             $stmt->bindValue(':password', password_hash('default12345', PASSWORD_BCRYPT));
             $stmt->bindValue(':role', $requestBody['role']);
+            $stmt->bindValue(':departement', $requestBody['departement'] ?? null);
             $responseSaveUser = $stmt->execute();
             $database->disconnect();
             // Response error after proses data from database
@@ -128,7 +137,8 @@
                 'data' => [
                     'username' => $requestBody['username'],
                     'email' => $requestBody['email'],
-                    'role' => $requestBody['role']
+                    'role' => $requestBody['role'],
+                    'departement' => $requestBody['departement'] ?? null
                 ],
                 'message' => 'Berhasil membuat user baru'
             ];
@@ -168,14 +178,28 @@
                     'message' => 'Username, email, dan role harus memiliki panjang 5-20 karakter'
                 ];
             }
+            if ($requestBody['role'] === 'LEADER' && empty($requestBody['departement'])) {
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Departemen wajib diisi untuk role LEADER'
+                ];
+            }
             //Process to database
             $database = new Database();
             $conn = $database->connect();
-            $query = "UPDATE tb_users SET username = :username, email = :email, role = :role WHERE id_user = :id_user";
+            // Query dengan departement
+            $query = "UPDATE tb_users
+                        SET username = :username,
+                            email = :email,
+                            role = :role,
+                            departement = :departement
+                        WHERE id_user = :id_user";
             $stmt = $conn->prepare($query);
             $stmt->bindValue(':username', $requestBody['username']);
             $stmt->bindValue(':email', $requestBody['email']);
             $stmt->bindValue(':role', $requestBody['role']);
+            $stmt->bindValue(':departement', $requestBody['departement'] ?? null);
             $stmt->bindValue(':id_user', $requestBody['idUser'], PDO::PARAM_INT);
             $responseUpdateUser = $stmt->execute();
             $database->disconnect();

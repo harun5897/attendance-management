@@ -3,6 +3,7 @@
     require_once '../middleware/middleware.php';
     $middleware = new Middleware();
     $middleware->middlewarePage();
+    $role = $_SESSION['role'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,62 +69,70 @@
                             </nav>
                         </div>
                         <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-                            <div class="d-flex justify-content-between">
-                                <input id="path-file" type="hidden">
-                                <div class="d-flex">
-                                    <button type="button" class="btn btn-primary btn-sm mb-2" onclick="uploadAttendance()"> Upload </button>
-                                    <div class="mx-1">
-                                        <input id="file-attendance" type="file" class="form-control form-control-sm" />
+                            <input id="path-file" type="hidden">
+                            <?php if($role == "ADMIN") { ?>
+                            <div>
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex">
+                                        <button type="button" class="btn btn-primary btn-sm mb-2" onclick="uploadAttendance()"> Upload </button>
+                                        <div class="mx-1">
+                                            <input id="file-attendance" type="file" class="form-control form-control-sm" />
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <select id="departement" class="form-select form-select-sm" aria-label="Default select example" onchange="getAttendance()">
+                                            <option value="">Pilih Departemen</option>
+                                            <option value="M2">M2</option>
+                                            <option value="TM">TM</option>
+                                            <option value="SM">SM</option>
+                                            <option value="QA">QA</option>
+                                            <option value="PURCHASING">PURCHASING</option>
+                                            <option value="PRODUCTION">PRODUCTION</option>
+                                            <option value="PACKING">PE</option>
+                                            <option value="ME">ME</option>
+                                            <option value="MCA">MCA</option>
+                                            <option value="M1">M1</option>
+                                            <option value="LOGISTIC">LOGISTIC</option>
+                                            <option value="ADMINISTRATION">ADMINISTRATION</option>
+                                            <option value="ACCOUNTING">ACCOUNTING</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="">
-                                    <select id="departement" class="form-select form-select-sm" aria-label="Default select example" onchange="getAttendance()">
-                                        <option value="">Pilih Departemen</option>
-                                        <option value="M2">M2</option>
-                                        <option value="TM">TM</option>
-                                        <option value="SM">SM</option>
-                                        <option value="QA">QA</option>
-                                        <option value="PURCHASING">PURCHASING</option>
-                                        <option value="PRODUCTION">PRODUCTION</option>
-                                        <option value="PACKING">PE</option>
-                                        <option value="ME">ME</option>
-                                        <option value="MCA">MCA</option>
-                                        <option value="M1">M1</option>
-                                        <option value="LOGISTIC">LOGISTIC</option>
-                                        <option value="ADMINISTRATION">ADMINISTRATION</option>
-                                        <option value="ACCOUNTING">ACCOUNTING</option>
-                                    </select>
+                                <table class="table table-bordered table-sm shadow-lg" style="font-size: 13px !important;">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="text-center">No</th>
+                                            <th scope="col">Kode Karyawan</th>
+                                            <th scope="col">Nama Karyawan</th>
+                                            <th scope="col">Jam Masuk</th>
+                                            <th scope="col">Overtime</th>
+                                            <th scope="col">Meal Box</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attendance-excel-table-body">
+                                        <tr>
+                                            <td colspan="21" class="text-center">Data tidak ditemukan</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="d-flex justify-content-between">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="#" onclick="prevPage('prev')">Previous</a></li>
+                                            <li class="page-item"><span id="display-current-page" class="page-link">1</span></li>
+                                            <li class="page-item"><a class="page-link" href="#" onclick="nextPage()">Next</a></li>
+                                        </ul>
+                                    </nav>
+                                    <div class="">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="submitDataAttendance()">Submit Data Absensi Departemen</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <table class="table table-bordered table-sm shadow-lg" style="font-size: 13px !important;">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="text-center">No</th>
-                                        <th scope="col">Kode Karyawan</th>
-                                        <th scope="col">Nama Karyawan</th>
-                                        <th scope="col">Jam Masuk</th>
-                                        <th scope="col">Overtime</th>
-                                        <th scope="col">Meal Box</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="attendance-excel-table-body">
-                                    <tr>
-                                        <td colspan="21" class="text-center">Data tidak ditemukan</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="d-flex justify-content-between">
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="#" onclick="prevPage('prev')">Previous</a></li>
-                                        <li class="page-item"><span id="display-current-page" class="page-link">1</span></li>
-                                        <li class="page-item"><a class="page-link" href="#" onclick="nextPage()">Next</a></li>
-                                    </ul>
-                                </nav>
-                                <div class="">
-                                    <button type="button" class="btn btn-sm btn-primary" onclick="submitDataAttendance()">Submit Data Absensi Departemen</button>
+                            <?php } else { ?>
+                                <div class="ms-3">
+                                    <span>Maaf role anda tidak memiliki akses untuk mengelola absensi</span>
                                 </div>
+                            <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -156,6 +165,7 @@
                             <option value="">Pilih meal box</option>
                             <option value="siang">siang</option>
                             <option value="malam">malam</option>
+                            <option value="siang_malam">siang & malam</option>
                         </select>
                 </div>
                 <div class="modal-footer">
@@ -191,6 +201,7 @@
                             <option value="">Pilih meal box</option>
                             <option value="siang">siang</option>
                             <option value="malam">malam</option>
+                            <option value="siang_malam">siang & malam</option>
                         </select>
                         <input id="date-attendance-actual" class="form-control mb-3" type="date" aria-label="date-attendance-actual">
                 </div>
