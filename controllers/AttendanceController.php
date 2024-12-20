@@ -202,10 +202,14 @@ class AttendanceController {
         }
         $database = new Database();
         $conn = $database->connect();
+        // Mengambil halaman saat ini
         $page = isset($requestBody['page']) ? (int)$requestBody['page'] : 1;
         $limit = 8;
         $offset = ($page - 1) * $limit;
+        // Memeriksa apakah ada data departement di session
+        $departement = isset($_SESSION["departement"]) ? $_SESSION["departement"] : null;
         try {
+            // Membuat query dasar
             $query = "
                 SELECT
                     e.code_employee,
@@ -220,21 +224,38 @@ class AttendanceController {
                     tb_employee AS e
                 ON
                     a.code_employee = e.code_employee
-                LIMIT :limit OFFSET :offset
             ";
+            // Jika ada departement di session, tambahkan filter pada query
+            if ($departement) {
+                $query .= " WHERE e.departement = :departement";
+            }
+            $query .= " LIMIT :limit OFFSET :offset";
+            // Persiapkan dan eksekusi query
             $stmt = $conn->prepare($query);
+            // Jika ada filter departement, bind nilai departement
+            if ($departement) {
+                $stmt->bindValue(':departement', $departement, PDO::PARAM_STR);
+            }
+            // Bind limit dan offset
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
             $attendanceData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            // Query untuk menghitung total data
+            // Query untuk menghitung total data (dengan atau tanpa filter departement)
             $totalQuery = "
                 SELECT COUNT(*) as total
                 FROM tb_attendance AS a
                 INNER JOIN tb_employee AS e
                 ON a.code_employee = e.code_employee
             ";
+            if ($departement) {
+                $totalQuery .= " WHERE e.departement = :departement";
+            }
             $totalStmt = $conn->prepare($totalQuery);
+            // Jika ada filter departement, bind nilai departement
+            if ($departement) {
+                $totalStmt->bindValue(':departement', $departement, PDO::PARAM_STR);
+            }
             $totalStmt->execute();
             $totalResult = $totalStmt->fetch(PDO::FETCH_ASSOC);
             $totalData = (int)$totalResult['total'];
@@ -248,7 +269,7 @@ class AttendanceController {
                     'current_page' => $page,
                     'total_pages' => $totalPages,
                     'total_data' => $totalData,
-                    'data_per_page' => $limit
+                    'data_per_page' => $limit,
                 ],
                 'message' => 'Berhasil mengambil data kehadiran karyawan'
             ];

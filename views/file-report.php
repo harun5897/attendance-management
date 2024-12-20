@@ -7,6 +7,9 @@ require_once '../middleware/middleware.php';
 $middleware = new Middleware();
 $middleware->middlewarePage();
 
+if($_SESSION['role'] == 'MANAGER' && $_SESSION['role'] == 'ADMIN') {
+    header("Location: /attendance/index.php");
+}
 if (!isset($_GET['start_date']) || !isset($_GET['end_date'])) {
     echo "Rentang tanggal tidak disediakan. Harap tambahkan parameter `start_date` dan `end_date` di URL.";
     exit();

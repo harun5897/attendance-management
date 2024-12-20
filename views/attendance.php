@@ -4,6 +4,9 @@
     $middleware = new Middleware();
     $middleware->middlewarePage();
     $role = $_SESSION['role'];
+    if($_SESSION['role'] != 'LEADER' && $_SESSION['role'] != 'ADMIN') {
+        header("Location: /attendance/index.php");
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">

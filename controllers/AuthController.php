@@ -38,7 +38,7 @@
             // Response success after proses data from database
             return [
                 'success' => true,
-                'data' => null,
+                'data' => $user,
                 'message' => 'Berhasil Login'
             ];
         }

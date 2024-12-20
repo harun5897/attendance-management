@@ -1,7 +1,10 @@
 <?php
     require_once '../controllers/EmployeeController.php';
+    require_once '../middleware/middleware.php';
+
     header('Content-Type: application/json');
     $employee = new EmployeeController();
+    $middleware = new Middleware();
     $requestMethod = $_SERVER['REQUEST_METHOD'];
     $fullPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $routePath = str_replace('/attendance/api/employee.php', '', $fullPath);

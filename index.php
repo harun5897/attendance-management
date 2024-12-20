@@ -74,6 +74,14 @@
         SwalAlert.success(responseLogin.message)
         setTimeout(() => {
             Swal.close()
+            if(responseLogin.data.role == 'MANAGER') {
+                window.location.href = '/attendance/views/report.php';
+                return
+            }
+            if(responseLogin.data.role == 'LEADER') {
+                window.location.href = '/attendance/views/employee.php';
+                return
+            }
             window.location.href = '/attendance/views/user.php';
         }, 1000);
     }

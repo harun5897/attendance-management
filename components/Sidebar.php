@@ -1,5 +1,6 @@
 <div id="sidebar" class="w-25 border-end border-2 shadow-lg">
     <br><br><br>
+    <?php if($_SESSION['role'] == 'ADMIN'): ?>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
         onclick="window.location.href='/attendance/views/user.php';"
@@ -8,6 +9,8 @@
     >
         Data Pengguna
     </div>
+    <?php endif; ?>
+    <?php if($_SESSION['role'] == 'LEADER' || $_SESSION['role'] == 'ADMIN'): ?>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
         onclick="window.location.href='/attendance/views/employee.php';"
@@ -16,6 +19,8 @@
     >
         Data Karyawan
     </div>
+    <?php endif; ?>
+    <?php if($_SESSION['role'] == 'LEADER' || $_SESSION['role'] == 'ADMIN'): ?>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
         onclick="window.location.href='/attendance/views/attendance.php';"
@@ -24,6 +29,8 @@
     >
         Data Absensi
     </div>
+    <?php endif; ?>
+    <?php if($_SESSION['role'] == 'MANAGER' || $_SESSION['role'] == 'ADMIN'): ?>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
         onclick="window.location.href='/attendance/views/report.php';"
@@ -32,6 +39,7 @@
     >
         Laporan
     </div>
+    <?php endif; ?>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
         onclick="logout()"
