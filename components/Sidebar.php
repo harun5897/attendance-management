@@ -42,6 +42,14 @@
     <?php endif; ?>
     <div
         class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
+        onclick="window.location.href='/attendance/views/change-password.php';"
+        tabindex="0"
+        role="button"
+    >
+        Ganti Kata Sandi
+    </div>
+    <div
+        class="sidebar-menu w-100 ps-3 py-3 border-bottom border-black"
         onclick="logout()"
         tabindex="0"
         role="button"

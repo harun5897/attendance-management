@@ -35,6 +35,10 @@
             $requestBody = json_decode(file_get_contents('php://input'), true);
             echo json_encode($user->resetPassword($requestBody));
             break;
+        case 'POST_/change-password':
+            $requestBody = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($user->changePassword($requestBody));
+            break;
         default:
             echo json_encode([
                 'success' => false,
