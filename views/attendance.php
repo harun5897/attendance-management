@@ -52,6 +52,7 @@
                                         <th scope="col">Jam Masuk</th>
                                         <th scope="col">Overtime</th>
                                         <th scope="col">Meal Box</th>
+                                        <th scope="col">Keterangan</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
@@ -110,6 +111,7 @@
                                             <th scope="col">Jam Masuk</th>
                                             <th scope="col">Overtime</th>
                                             <th scope="col">Meal Box</th>
+                                            <th scope="col">Keterangan</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -170,6 +172,7 @@
                             <option value="malam">malam</option>
                             <option value="siang_malam">siang & malam</option>
                         </select>
+                        <input id="description" class="form-control mb-3" type="text" placeholder="Masukan keterangan" aria-label="description">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
@@ -206,6 +209,7 @@
                             <option value="malam">malam</option>
                             <option value="siang_malam">siang & malam</option>
                         </select>
+                        <input id="description-actual" class="form-control mb-3" type="text" placeholder="Masukan keterangan" aria-label="description">
                         <input id="date-attendance-actual" class="form-control mb-3" type="date" aria-label="date-attendance-actual">
                 </div>
                 <div class="modal-footer">
@@ -296,6 +300,7 @@
             html_data += `<td class="text-center">${attendance.time ?? "-"}</td>`;
             html_data += `<td class="text-center">${attendance.overtime ? attendance.overtime+" Jam" : "-"}</td>`;
             html_data += `<td class="text-center">${attendance.meal_box ?? "-"}</td>`;
+            html_data += `<td class="text-center">${attendance.description ? truncateString(attendance.description) : "-"}</td>`;
             html_data += '<td>';
             html_data += `<button type="button" class="btn btn-sm btn-warning me-1" style="font-size: 12px;" onclick="getDetailAttendance('${attendance.code_employee}')">Edit</button>`;
             html_data += `<button type="button" class="btn btn-sm btn-danger me-1" style="font-size: 12px;" onclick="deleteAttendance('${attendance.code_employee}')">Hapus</button>`;
@@ -322,6 +327,7 @@
         document.getElementById('time').value = dataFilterEmployee[0].time
         document.getElementById('overtime').value = !dataFilterEmployee[0].overtime ? '' : dataFilterEmployee[0].overtime
         document.getElementById('meal-box').value = !dataFilterEmployee[0].meal_box ? '' : dataFilterEmployee[0].meal_box
+        document.getElementById('description').value = !dataFilterEmployee[0].description ? '' : dataFilterEmployee[0].description
     }
     function updateAttendance(event) {
         event.preventDefault();
@@ -330,6 +336,7 @@
         const time = document.getElementById('time').value
         const overtime = document.getElementById('overtime').value
         const mealBox =  document.getElementById('meal-box').value
+        const description =  document.getElementById('description').value
 
         if(!codeEmployee) {
             return SwalAlert.warning('Data tidak lengkap!', 'Kode karyawan tidak boleh kosong.')
@@ -340,12 +347,16 @@
         if(time.length > 5) {
             return SwalAlert.warning('Terjadi kesalahan!', 'Maksimal jam masuk adalah 5 karakter.')
         }
+        if(description.length > 50) {
+            return SwalAlert.warning('Terjadi kesalahan!', 'Maksimal keterangan hanya 50 karakter')
+        }
         const updatedData = {
             code_employee: codeEmployee,
             name_employee: nameEmployee,
             time: !time ? null : time,
             overtime: !overtime ? null : overtime,
-            meal_box: !mealBox ? null : mealBox
+            meal_box: !mealBox ? null : mealBox,
+            description: !description ? null : description
         };
         const updatedAttendance = stateAttendanceFromExcel.map(data => {
             if (data.code_employee == codeEmployee) {
@@ -411,6 +422,12 @@
         const year = parts[3];
         return `${year}-${month}-${day}`;
     }
+    function truncateString(str, maxLength = 10) {
+        if (str.length > maxLength) {
+            return str.substring(0, maxLength) + '...';
+        }
+        return str;
+    }
     async function getAttendanceActual(navigationPage) {
         const totalPages = document.getElementById('total-pages').value;
         const currentPage = document.getElementById('current-page').value;
@@ -447,6 +464,7 @@
             html_data += `<td class="text-center">${attendance.time ?? "-"}</td>`;
             html_data += `<td class="text-center">${attendance.overtime ? attendance.overtime+ " Jam": "-"}</td>`;
             html_data += `<td class="text-center">${attendance.meal_box ?? "-"}</td>`;
+            html_data += `<td class="text-center">${attendance.description ? truncateString(attendance.description) : "-"}</td>`;
             html_data += '<td>';
             html_data += `<button type="button" class="btn btn-sm btn-warning me-1" style="font-size: 12px;" onclick="detailAttendanceActual(${attendance.code_employee})">Edit</button>`;
             html_data += `<button type="button" class="btn btn-sm btn-danger me-1" style="font-size: 12px;" onclick="deleteAttendanceActual(${attendance.code_employee})">Hapus</button>`;
@@ -496,13 +514,13 @@
         if(!responseDetailAttendanceActual.success) {
             return SwalAlert.warning('Terjadi kesalahan', responseDetailAttendanceActual.message)
         }
-        console.log(responseDetailAttendanceActual.data)
         myModalActual.show()
         document.getElementById('code-employee-actual').value = responseDetailAttendanceActual.data[0].code_employee
         document.getElementById('name-employee-actual').value = responseDetailAttendanceActual.data[0].name_employee
         document.getElementById('time-actual').value = responseDetailAttendanceActual.data[0].time
         document.getElementById('overtime-actual').value = !responseDetailAttendanceActual.data[0].overtime ? '' : responseDetailAttendanceActual.data[0].overtime
         document.getElementById('meal-box-actual').value = !responseDetailAttendanceActual.data[0].meal_box ? '' : responseDetailAttendanceActual.data[0].meal_box
+        document.getElementById('description-actual').value = !responseDetailAttendanceActual.data[0].description ? '' : responseDetailAttendanceActual.data[0].description
         document.getElementById('date-attendance-actual').value = responseDetailAttendanceActual.data[0].date_attendance
     }
     async function updateAttendanceActual() {
@@ -512,12 +530,16 @@
         const time = document.getElementById('time-actual').value
         const overtime = document.getElementById('overtime-actual').value
         const mealBox = document.getElementById('meal-box-actual').value
+        const description = document.getElementById('description-actual').value
         const dateAttendance = document.getElementById('date-attendance-actual').value
         if(!codeEmployee) {
             return SwalAlert.warning('Terjadi kesalahan!', 'Kode karyawan tidak ditemukan')
         }
         if(!nameEmployee) {
             return SwalAlert.warning('Terjadi kesalahan!', 'Nama karyawan wajib diisi')
+        }
+        if(description.length > 50) {
+            return SwalAlert.warning('Terjadi kesalahan!', 'Maksimal keterangan hanya 50 karakter')
         }
         const responseUpdateAttendanceActual = await fetch('/attendance/api/attendance.php/update-attendance-actual', {
             method: 'POST',
@@ -529,6 +551,7 @@
                 time: time,
                 overtime: overtime,
                 mealbox: mealBox,
+                description: description,
                 dateAttendance: dateAttendance
             })
         }).then(response => response.json())

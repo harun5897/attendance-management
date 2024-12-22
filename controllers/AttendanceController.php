@@ -99,7 +99,8 @@ class AttendanceController {
                             ? sprintf('%02d:%02d', $jam, $menit)
                             : null,
                 'overtime' => null,
-                'meal_box' => null
+                'meal_box' => null,
+                'description' => null
             ];
         }
         array_pop($data);
@@ -161,8 +162,8 @@ class AttendanceController {
                 throw new UnexpectedValueException("Data attendance untuk departemen ini pada tanggal $dateAttendance sudah ada di sistem.");
             }
             // 4. Query untuk insert data ke tb_attendance
-            $queryInsert = "INSERT INTO tb_attendance (code_employee, time, overtime, meal_box, date_attendance)
-                            VALUES (:code_employee, :time, :overtime, :meal_box, :date_attendance)";
+            $queryInsert = "INSERT INTO tb_attendance (code_employee, time, overtime, meal_box, description, date_attendance)
+                            VALUES (:code_employee, :time, :overtime, :meal_box, :description, :date_attendance)";
             $stmtInsert = $conn->prepare($queryInsert);
             // 5. Loop dataAttendance untuk insert ke tb_attendance
             foreach ($requestBody['dataAttendance'] as $attendance) {
@@ -170,6 +171,7 @@ class AttendanceController {
                 $stmtInsert->bindValue(':time', $attendance['time'] ?? null);
                 $stmtInsert->bindValue(':overtime', $attendance['overtime'] ?? null);
                 $stmtInsert->bindValue(':meal_box', $attendance['meal_box'] ?? null);
+                $stmtInsert->bindValue(':description', $attendance['description'] ?? null);
                 $stmtInsert->bindValue(':date_attendance', $dateAttendance);
                 $stmtInsert->execute();
             }
@@ -217,6 +219,7 @@ class AttendanceController {
                     a.time,
                     a.overtime,
                     a.meal_box,
+                    a.description,
                     a.date_attendance
                 FROM
                     tb_attendance AS a
@@ -346,6 +349,7 @@ class AttendanceController {
                     a.time,
                     a.overtime,
                     a.meal_box,
+                    a.description,
                     a.date_attendance
                 FROM
                     tb_employee e
@@ -446,6 +450,7 @@ class AttendanceController {
                     time = :time,
                     overtime = :overtime,
                     meal_box = :mealbox,
+                    description = :description,
                     date_attendance = :dateAttendance
                 WHERE
                     code_employee = :codeEmployee
@@ -454,6 +459,7 @@ class AttendanceController {
             $stmt->bindValue(':time', $requestBody['time'], PDO::PARAM_STR);
             $stmt->bindValue(':overtime', $requestBody['overtime'], PDO::PARAM_STR);
             $stmt->bindValue(':mealbox', $requestBody['mealbox'], PDO::PARAM_STR);
+            $stmt->bindValue(':description', $requestBody['description'], PDO::PARAM_STR);
             $stmt->bindValue(':dateAttendance', $requestBody['dateAttendance'], PDO::PARAM_STR);
             $stmt->bindValue(':codeEmployee', $requestBody['codeEmployee'], PDO::PARAM_STR);
             $responseUpdate = $stmt->execute();
