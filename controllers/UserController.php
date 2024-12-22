@@ -280,7 +280,7 @@
             $conn = $database->connect();
             $query = "UPDATE tb_users SET password = :password WHERE id_user = :id_user";
             $stmt = $conn->prepare($query);
-            $stmt->bindValue(':password', password_hash('12345', PASSWORD_BCRYPT));
+            $stmt->bindValue(':password', password_hash('default12345', PASSWORD_BCRYPT));
             $stmt->bindValue(':id_user', $requestBody['idUser'], PDO::PARAM_INT);
             $responseResetPassword = $stmt->execute();
             $database->disconnect();
