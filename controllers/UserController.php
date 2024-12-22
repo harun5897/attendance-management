@@ -296,7 +296,7 @@
             return [
                 'success' => true,
                 'data' => $requestBody['idUser'],
-                'message' => 'Berhasil, password baru setelah di reset adalah "12345"'
+                'message' => 'Berhasil, password baru setelah di reset adalah "default12345"'
             ];
         }
         public function changePassword($requestBody) {
