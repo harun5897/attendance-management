@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 19, 2024 at 05:29 PM
+-- Generation Time: Dec 22, 2024 at 10:55 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,6 +33,7 @@ CREATE TABLE `tb_attendance` (
   `time` varchar(50) DEFAULT NULL,
   `overtime` varchar(50) DEFAULT NULL,
   `meal_box` varchar(50) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
   `date_attendance` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -40,10 +41,10 @@ CREATE TABLE `tb_attendance` (
 -- Dumping data for table `tb_attendance`
 --
 
-INSERT INTO `tb_attendance` (`id_attendance`, `code_employee`, `time`, `overtime`, `meal_box`, `date_attendance`) VALUES
-(33, 210213, '07:56', '1', 'siang', '2024-12-02'),
-(34, 202414, '07:41', '1', 'siang_malam', '2024-12-02'),
-(35, 241003, '07:47', '1', 'malam', '2024-12-02');
+INSERT INTO `tb_attendance` (`id_attendance`, `code_employee`, `time`, `overtime`, `meal_box`, `description`, `date_attendance`) VALUES
+(45, 210213, NULL, NULL, NULL, NULL, '2024-12-02'),
+(46, 202414, '07:56', '1', 'siang_malam', NULL, '2024-12-02'),
+(47, 241003, '07:47', '2', 'siang', NULL, '2024-12-02');
 
 -- --------------------------------------------------------
 
@@ -88,8 +89,10 @@ CREATE TABLE `tb_users` (
 --
 
 INSERT INTO `tb_users` (`id_user`, `username`, `email`, `password`, `role`, `departement`) VALUES
-(29, 'leader_TM', 'leader_tm@example.com', '$2y$10$LzYJR/cflLSyoOXlEOEa3uq5u7x0GQomosK9HTV6fSOhYOAjfmjB.', 'LEADER', 'TM'),
-(31, 'admin_1', 'admin_1@example.com', '$2y$10$caRQa24MxiZKnrd9ERr7v.3i2IXeDsMb6mhrcZwCQKhCV6jGTPc/2', 'ADMIN', '');
+(29, 'leader_tm', 'leader_tm@example.com', '$2y$10$LzYJR/cflLSyoOXlEOEa3uq5u7x0GQomosK9HTV6fSOhYOAjfmjB.', 'LEADER', 'TM'),
+(31, 'admin_1', 'admin_1@example.com', '$2y$10$kmlYWBNQTysREth0H/upWOtplOrZvX1xFiIOYJTRzJqA8BXpNEP.6', 'ADMIN', ''),
+(32, 'leader_sm', 'leader_sm@example.com', '$2y$10$SUhxQDj6gNiz586IgwZ0zOVwY04fT7dH3OuO2Ifr2Z09.xV46LR9i', 'LEADER', 'SM'),
+(33, 'manager_1', 'manager_1@example.com', '$2y$10$p87FdGbnBQdqSYYBpiZU/.wliAGjXe8ZDVFhdE40PLls3of47.uoS', 'MANAGER', '');
 
 --
 -- Indexes for dumped tables
@@ -121,13 +124,13 @@ ALTER TABLE `tb_users`
 -- AUTO_INCREMENT for table `tb_attendance`
 --
 ALTER TABLE `tb_attendance`
-  MODIFY `id_attendance` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id_attendance` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `tb_users`
 --
 ALTER TABLE `tb_users`
-  MODIFY `id_user` int(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id_user` int(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
