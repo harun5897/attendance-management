@@ -41,6 +41,15 @@
                                     <label for="end-date" class="form-label fw-bold">Tanggal Akhir</label>
                                     <input type="date" class="form-control" id="end-date">
                                 </div>
+                                <div class="mb-3">
+                                    <label for="employee-attendance" class="form-label fw-bold">Kehadiran Karyawan</label>
+                                    <select id="employee-attendance" class="form-select mb-3" aria-label="Default select example">
+                                        <option value="">Pilih kehadiran karyawan</option>
+                                        <option value="hadir">Hadir</option>
+                                        <option value="tidak_hadir">Tidak Hadir</option>
+                                        <option value="semua_data">Semua Data</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary shadow rounded-0">Cetak Laporan</button>
@@ -61,6 +70,7 @@
         event.preventDefault();
         const startDate = document.getElementById('start-date').value
         const endDate = document.getElementById('end-date').value
+        const employeeAttendance = document.getElementById('employee-attendance').value
 
         if(!startDate) {
             return SwalAlert.warning('Data tidak lengkap!', 'Tanggal mulai wajib diisi.')
@@ -68,10 +78,13 @@
         if(!endDate) {
             return SwalAlert.warning('Data tidak lengkap!', 'Tanggal akhir wajib diisi.')
         }
+        if(!employeeAttendance) {
+            return SwalAlert.warning('Data tidak lengkap!', 'Kehadiran karyawan wajib dipilih')
+        }
         if (new Date(startDate) > new Date(endDate)) {
             return SwalAlert.warning('Data tidak valid!', 'Tanggal mulai harus lebih kecil dari tanggal akhir.');
         }
-        const url = `/attendance/views/file-report.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}`;
+        const url = `/attendance/views/file-report.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&employee_attendance=${encodeURIComponent(employeeAttendance)}`;
         window.location.href = url;
     }
 </script>

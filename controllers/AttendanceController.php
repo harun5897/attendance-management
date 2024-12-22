@@ -398,45 +398,36 @@ class AttendanceController {
                 'message' => 'Kode karyawan tidak ditemukan'
             ];
         }
-        if (
-            empty($requestBody['time']) ||
-            empty($requestBody['overtime']) ||
-            empty($requestBody['mealbox']) ||
-            empty($requestBody['dateAttendance'])
-        ) {
+        // Validasi 'time'
+        if (!empty($requestBody['time']) && (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $requestBody['time']) || strlen($requestBody['time']) != 5)) {
             return [
                 'success' => false,
                 'data' => null,
-                'message' => 'Semua data wajib diisi: time, overtime, mealbox, dan dateAttendance'
+                'message' => 'Format waktu tidak sesuai. Harus menggunakan format HH:mm.'
             ];
         }
-        // Validasi panjang karakter
-        if (
-            strlen($requestBody['time']) != 5 || // Format HH:mm (misalnya 07:30)
-            strlen($requestBody['overtime']) < 1 || strlen($requestBody['overtime']) > 10 ||
-            strlen($requestBody['mealbox']) < 1 || strlen($requestBody['mealbox']) > 15 ||
-            strlen($requestBody['dateAttendance']) != 10 // Format YYYY-MM-DD
-        ) {
+        // Validasi 'overtime'
+        if (!empty($requestBody['overtime']) && (strlen($requestBody['overtime']) < 1 || strlen($requestBody['overtime']) > 10)) {
             return [
                 'success' => false,
                 'data' => null,
-                'message' => 'Validasi panjang karakter tidak sesuai. Periksa input Anda.'
+                'message' => 'Panjang overtime harus antara 1 hingga 10 karakter.'
             ];
         }
-        // Validasi format waktu (HH:mm)
-        if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $requestBody['time'])) {
+        // Validasi 'mealbox'
+        if (!empty($requestBody['mealbox']) && (strlen($requestBody['mealbox']) < 1 || strlen($requestBody['mealbox']) > 15)) {
             return [
                 'success' => false,
-                'data' => $requestBody['time'],
-                'message' => 'Format waktu tidak sesuai. Gunakan format HH:mm'
+                'data' => null,
+                'message' => 'Panjang mealbox harus antara 1 hingga 15 karakter.'
             ];
         }
-        // Validasi format tanggal (YYYY-MM-DD)
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $requestBody['dateAttendance'])) {
+        // Validasi 'dateAttendance'
+        if (empty($requestBody['dateAttendance']) || strlen($requestBody['dateAttendance']) != 10 || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $requestBody['dateAttendance'])) {
             return [
                 'success' => false,
-                'data' => $requestBody['dateAttendance'],
-                'message' => 'Format tanggal tidak sesuai. Gunakan format YYYY-MM-DD'
+                'data' => null,
+                'message' => 'Format tanggal tidak sesuai. Harus menggunakan format YYYY-MM-DD.'
             ];
         }
         // Koneksi ke database
@@ -456,10 +447,10 @@ class AttendanceController {
                     code_employee = :codeEmployee
             ";
             $stmt = $conn->prepare($query);
-            $stmt->bindValue(':time', $requestBody['time'], PDO::PARAM_STR);
-            $stmt->bindValue(':overtime', $requestBody['overtime'], PDO::PARAM_STR);
-            $stmt->bindValue(':mealbox', $requestBody['mealbox'], PDO::PARAM_STR);
-            $stmt->bindValue(':description', $requestBody['description'], PDO::PARAM_STR);
+            $stmt->bindValue(':time', !empty($requestBody['time']) ? $requestBody['time'] : null, PDO::PARAM_STR);
+            $stmt->bindValue(':overtime', !empty($requestBody['overtime']) ? $requestBody['overtime'] : null, PDO::PARAM_STR);
+            $stmt->bindValue(':mealbox', !empty($requestBody['mealbox']) ? $requestBody['mealbox'] : null, PDO::PARAM_STR);
+            $stmt->bindValue(':description', !empty($requestBody['description']) ? $requestBody['description'] : null, PDO::PARAM_STR);
             $stmt->bindValue(':dateAttendance', $requestBody['dateAttendance'], PDO::PARAM_STR);
             $stmt->bindValue(':codeEmployee', $requestBody['codeEmployee'], PDO::PARAM_STR);
             $responseUpdate = $stmt->execute();

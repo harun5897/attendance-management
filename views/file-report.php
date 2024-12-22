@@ -7,18 +7,19 @@ require_once '../middleware/middleware.php';
 $middleware = new Middleware();
 $middleware->middlewarePage();
 
-if($_SESSION['role'] == 'MANAGER' && $_SESSION['role'] == 'ADMIN') {
+if ($_SESSION['role'] == 'MANAGER' && $_SESSION['role'] == 'ADMIN') {
     header("Location: /attendance/index.php");
 }
-if (!isset($_GET['start_date']) || !isset($_GET['end_date'])) {
-    echo "Rentang tanggal tidak disediakan. Harap tambahkan parameter `start_date` dan `end_date` di URL.";
+if (!isset($_GET['start_date']) || !isset($_GET['end_date']) || !isset($_GET['employee_attendance'])) {
+    echo "Parameter tidak lengkap. Harap tambahkan `start_date`, `end_date`, dan `employee_attendance` di URL.";
     exit();
 }
+
 $startDate = $_GET['start_date'];
 $endDate = $_GET['end_date'];
+$employeeAttendance = $_GET['employee_attendance'];
 
 class PDF extends FPDF {
-    // Header dokumen
     public function Header() {
         $this->SetFont('Arial', 'B', 13);
         $this->Cell(0, 8, 'Laporan Kehadiran Karyawan', 0, 1, 'C');
@@ -28,7 +29,6 @@ class PDF extends FPDF {
         $this->Ln(5);
         $this->Line(5, 40, 205, 40);
         $this->Ln(10);
-        // Heading tabel
         $this->SetFont('Arial', 'B', 7);
         $tableWidth = 10 + 35 + 45 + 20 + 20 + 20 + 25;
         $pageWidth = $this->GetPageWidth();
@@ -42,7 +42,7 @@ class PDF extends FPDF {
         $this->Cell(20, 7, 'Meal Box', 1, 0, 'C');
         $this->Cell(25, 7, 'Tanggal', 1, 1, 'C');
     }
-    // Footer dokumen
+
     public function Footer() {
         date_default_timezone_set('Asia/Jakarta');
         $this->SetY(-50);
@@ -53,9 +53,11 @@ class PDF extends FPDF {
         $this->Cell(170, 0, 'Manager Department', 0, 1, 'R');
     }
 }
+
 $database = new Database();
 $conn = $database->connect();
-// Query gabungan tabel
+
+// Query utama dengan logika filter berdasarkan employeeAttendance
 $query = "
     SELECT
         tb_attendance.code_employee,
@@ -73,6 +75,19 @@ $query = "
     WHERE
         tb_attendance.date_attendance BETWEEN :start_date AND :end_date
 ";
+
+// Tambahkan filter berdasarkan nilai employeeAttendance
+if ($employeeAttendance === 'hadir') {
+    $query .= " AND tb_attendance.time IS NOT NULL";
+} elseif ($employeeAttendance === 'tidak_hadir') {
+    $query .= " AND tb_attendance.time IS NULL";
+}
+
+$stmt = $conn->prepare($query);
+$stmt->bindParam(':start_date', $startDate);
+$stmt->bindParam(':end_date', $endDate);
+$stmt->execute();
+
 // Query untuk menghitung total meal box
 $totalMealBoxQuery = "
     SELECT
@@ -84,25 +99,27 @@ $totalMealBoxQuery = "
     WHERE
         date_attendance BETWEEN :start_date AND :end_date
 ";
-// Eksekusi query untuk data utama
-$stmt = $conn->prepare($query);
-$stmt->bindParam(':start_date', $startDate);
-$stmt->bindParam(':end_date', $endDate);
-$stmt->execute();
-// Eksekusi query untuk menghitung total meal box
+
+// Tambahkan filter berdasarkan nilai employeeAttendance
+if ($employeeAttendance === 'hadir') {
+    $totalMealBoxQuery .= " AND tb_attendance.time IS NOT NULL";
+} elseif ($employeeAttendance === 'tidak_hadir') {
+    $totalMealBoxQuery .= " AND tb_attendance.time IS NULL";
+}
 $totalStmt = $conn->prepare($totalMealBoxQuery);
 $totalStmt->bindParam(':start_date', $startDate);
 $totalStmt->bindParam(':end_date', $endDate);
 $totalStmt->execute();
 $totals = $totalStmt->fetch(PDO::FETCH_ASSOC);
+
 // Inisialisasi PDF
 $pdf = new PDF();
 $pdf->AliasNbPages();
 $pdf->AddPage('P', 'A4');
+
 // Menampilkan data pada tabel
 $pdf->SetFont('Arial', '', 7);
 $no = 1;
-// Lebar total tabel (jumlah lebar kolom)
 $tableWidth = 10 + 35 + 45 + 20 + 20 + 20 + 25;
 $pageWidth = $pdf->GetPageWidth();
 $marginLeft = ($pageWidth - $tableWidth) / 2;
@@ -117,6 +134,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $pdf->Cell(20, 7, $row['meal_box'], 1, 0, 'C');
     $pdf->Cell(25, 7, $row['date_attendance'], 1, 1, 'C');
 }
+
 // Total Meal Box
 $pdf->Ln(10);
 $pdf->SetFont('Arial', 'B', 7);
@@ -129,8 +147,10 @@ $pdf->SetX($marginLeft);
 $pdf->Cell(0, 7, 'Malam : ' . $totals['total_meal_box_malam'], 0, 1, 'L');
 $pdf->SetX($marginLeft);
 $pdf->Cell(0, 7, 'Siang dan Malam : ' . $totals['total_meal_box_siang_malam'], 0, 1, 'L');
+
 // Tutup koneksi database
 $database->disconnect();
+
 // Output PDF
 $pdf->Output();
 ?>
