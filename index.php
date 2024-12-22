@@ -24,7 +24,7 @@
                                 <input id="password" class="form-control mb-3" type="password" placeholder="Masukan Password" aria-label="email">
                                 <div class="d-flex justify-content-between">
                                     <button type="submit" class="btn btn-primary" onclick="login(event)">Masuk</button>
-                                    <a href="#" class="text-decoration-none">Lupa password ?</a>
+                                    <a href="/attendance/forgot-password.php" class="text-decoration-none">Lupa password ?</a>
                                 </div>
                             </form>
                         </div>
@@ -49,10 +49,10 @@
         const username = document.getElementById('email').value
         const password = document.getElementById('password').value
 
-        if(!email) {
+        if(!email || !username) {
             return SwalAlert.warning('Data tidak lengkap!', 'Data email atau username wajib di isi.')
         }
-        if(!email) {
+        if(!password) {
             return SwalAlert.warning('Data tidak lengkap!', 'Data password wajib di isi.')
         }
 

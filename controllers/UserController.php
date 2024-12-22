@@ -110,9 +110,25 @@
                     'message' => 'Departemen wajib diisi untuk role LEADER'
                 ];
             }
-            //Process to database
+            // Process to database
             $database = new Database();
             $conn = $database->connect();
+            // Check if email or username already exists
+            $checkQuery = "SELECT id_user FROM tb_users WHERE email = :email OR username = :username";
+            $checkStmt = $conn->prepare($checkQuery);
+            $checkStmt->bindValue(':email', $requestBody['email']);
+            $checkStmt->bindValue(':username', $requestBody['username']);
+            $checkStmt->execute();
+            $existingUser = $checkStmt->fetch(PDO::FETCH_ASSOC);
+            if ($existingUser) {
+                $database->disconnect();
+                return [
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'Email atau username sudah terdaftar dalam database'
+                ];
+            }
+            // Insert new user
             $query = "INSERT INTO tb_users (username, email, password, role, departement)
                         VALUES (:username, :email, :password, :role, :departement)";
             $stmt = $conn->prepare($query);
@@ -123,7 +139,7 @@
             $stmt->bindValue(':departement', $requestBody['departement'] ?? null);
             $responseSaveUser = $stmt->execute();
             $database->disconnect();
-            // Response error after proses data from database
+            // Response error after process data from database
             if (!$responseSaveUser) {
                 return [
                     'success' => false,
@@ -131,7 +147,7 @@
                     'message' => 'Gagal menambahkan data ke database'
                 ];
             }
-            // Response success after proses data from database
+            // Response success after process data from database
             return [
                 'success' => true,
                 'data' => [

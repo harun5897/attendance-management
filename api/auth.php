@@ -11,6 +11,14 @@
             $requestBody = json_decode(file_get_contents('php://input'), true);
             echo json_encode($auth->login($requestBody));
             break;
+        case 'POST_/request-change-password':
+            $requestBody = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($auth->requestChangePassword($requestBody));
+            break;
+        case 'POST_/change-password-by-request':
+            $requestBody = json_decode(file_get_contents('php://input'), true);
+            echo json_encode($auth->changePasswordByRequest($requestBody));
+            break;
         case 'POST_/logout':
             $requestBody = json_decode(file_get_contents('php://input'), true);
             echo json_encode($auth->logout($requestBody));
