@@ -30,17 +30,18 @@ class PDF extends FPDF {
         $this->Line(5, 40, 205, 40);
         $this->Ln(10);
         $this->SetFont('Arial', 'B', 7);
-        $tableWidth = 10 + 35 + 45 + 20 + 20 + 20 + 25;
+        $tableWidth = 10 + 22 + 45 + 20 + 20 + 20 + 20 + 18;
         $pageWidth = $this->GetPageWidth();
         $marginLeft = ($pageWidth - $tableWidth) / 2;
         $this->SetX($marginLeft);
         $this->Cell(10, 7, 'No', 1, 0, 'C');
-        $this->Cell(35, 7, 'Kode Karyawan', 1, 0, 'C');
+        $this->Cell(22, 7, 'Kode Karyawan', 1, 0, 'C');
         $this->Cell(45, 7, 'Nama Karyawan', 1, 0, 'C');
         $this->Cell(20, 7, 'Jam Masuk', 1, 0, 'C');
         $this->Cell(20, 7, 'Overtime', 1, 0, 'C');
         $this->Cell(20, 7, 'Meal Box', 1, 0, 'C');
-        $this->Cell(25, 7, 'Tanggal', 1, 1, 'C');
+        $this->Cell(20, 7, 'Keterangan', 1, 0, 'C');
+        $this->Cell(18, 7, 'Tanggal', 1, 1, 'C');
     }
 
     public function Footer() {
@@ -65,7 +66,9 @@ $query = "
         tb_attendance.time,
         tb_attendance.overtime,
         tb_attendance.meal_box,
+        tb_attendance.description,
         tb_attendance.date_attendance
+
     FROM
         tb_attendance
     JOIN
@@ -120,19 +123,20 @@ $pdf->AddPage('P', 'A4');
 // Menampilkan data pada tabel
 $pdf->SetFont('Arial', '', 7);
 $no = 1;
-$tableWidth = 10 + 35 + 45 + 20 + 20 + 20 + 25;
+$tableWidth = 10 + 22 + 45 + 20 + 20 + 20 + 20 + 18;
 $pageWidth = $pdf->GetPageWidth();
 $marginLeft = ($pageWidth - $tableWidth) / 2;
 
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $pdf->SetX($marginLeft);
     $pdf->Cell(10, 7, $no++, 1, 0, 'C');
-    $pdf->Cell(35, 7, $row['code_employee'], 1, 0, 'C');
+    $pdf->Cell(22, 7, $row['code_employee'], 1, 0, 'C');
     $pdf->Cell(45, 7, $row['name_employee'], 1, 0, 'C');
     $pdf->Cell(20, 7, $row['time'], 1, 0, 'C');
     $pdf->Cell(20, 7, $row['overtime'], 1, 0, 'C');
     $pdf->Cell(20, 7, $row['meal_box'], 1, 0, 'C');
-    $pdf->Cell(25, 7, $row['date_attendance'], 1, 1, 'C');
+    $pdf->Cell(20, 7, $row['description'], 1, 0, 'C');
+    $pdf->Cell(18, 7, $row['date_attendance'], 1, 1, 'C');
 }
 
 // Total Meal Box
