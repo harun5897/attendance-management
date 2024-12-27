@@ -422,6 +422,14 @@ class AttendanceController {
                 'message' => 'Panjang mealbox harus antara 1 hingga 15 karakter.'
             ];
         }
+        // Validasi 'description'
+        if (empty($requestBody['description']) || !preg_match('/^[a-zA-Z0-9]{1,5}$/', $requestBody['description'])) {
+            return [
+                'success' => false,
+                'data' => null,
+                'message' => 'Pastikan keterangan tidak kosong, hanya huruf atau angka, dan maksimal 5 karakter'
+            ];
+        }
         // Validasi 'dateAttendance'
         if (empty($requestBody['dateAttendance']) || strlen($requestBody['dateAttendance']) != 10 || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $requestBody['dateAttendance'])) {
             return [
@@ -450,7 +458,7 @@ class AttendanceController {
             $stmt->bindValue(':time', !empty($requestBody['time']) ? $requestBody['time'] : null, PDO::PARAM_STR);
             $stmt->bindValue(':overtime', !empty($requestBody['overtime']) ? $requestBody['overtime'] : null, PDO::PARAM_STR);
             $stmt->bindValue(':mealbox', !empty($requestBody['mealbox']) ? $requestBody['mealbox'] : null, PDO::PARAM_STR);
-            $stmt->bindValue(':description', !empty($requestBody['description']) ? $requestBody['description'] : null, PDO::PARAM_STR);
+            $stmt->bindValue(':description', !empty($requestBody['description']) ? strtoupper($requestBody['description']) : null, PDO::PARAM_STR);
             $stmt->bindValue(':dateAttendance', $requestBody['dateAttendance'], PDO::PARAM_STR);
             $stmt->bindValue(':codeEmployee', $requestBody['codeEmployee'], PDO::PARAM_STR);
             $responseUpdate = $stmt->execute();
