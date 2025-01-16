@@ -176,10 +176,10 @@
         const totalPages = document.getElementById('total-pages').value;
         const currentPage = document.getElementById('current-page').value;
         let page = currentPage;
-        if(navigationPage == 'prev' && currentPage > 1) {
+        if(navigationPage == 'prev' && parseInt(currentPage) > 1) {
             page = parseInt(currentPage) - 1;
         }
-        if(navigationPage == 'next' && currentPage < totalPages) {
+        if(navigationPage == 'next' && parseInt(currentPage) < parseInt(totalPages)) {
             page = parseInt(currentPage) + 1;
         }
         const responseGetUser = await fetch('/attendance/api/user.php/get-user', {
