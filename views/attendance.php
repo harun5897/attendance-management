@@ -66,9 +66,9 @@
                                 <input type="hidden" id="total-pages">
                                 <input type="hidden" id="current-page" value="1">
                                 <ul class="pagination">
-                                    <li class="page-item"><a class="page-link" href="#" onclick="getEmployee('prev')">Previous</a></li>
+                                    <li class="page-item"><a class="page-link" href="#" onclick="getAttendanceActual('prev')">Previous</a></li>
                                     <li class="page-item"><span id="display-current-page" class="page-link">1</span></li>
-                                    <li class="page-item"><a class="page-link" href="#" onclick="getEmployee('next')">Next</a></li>
+                                    <li class="page-item"><a class="page-link" href="#" onclick="getAttendanceActual('next')">Next</a></li>
                                 </ul>
                             </nav>
                         </div>
