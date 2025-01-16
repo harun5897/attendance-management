@@ -92,7 +92,7 @@
                                             <option value="QA">QA</option>
                                             <option value="PURCHASING">PURCHASING</option>
                                             <option value="PRODUCTION">PRODUCTION</option>
-                                            <option value="PACKING">PE</option>
+                                            <option value="PE">PE</option>
                                             <option value="ME">ME</option>
                                             <option value="MCA">MCA</option>
                                             <option value="M1">M1</option>
