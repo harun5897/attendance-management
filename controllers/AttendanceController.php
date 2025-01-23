@@ -423,11 +423,12 @@ class AttendanceController {
             ];
         }
         // Validasi 'description'
-        if (empty($requestBody['description']) || !preg_match('/^[a-zA-Z0-9]{1,5}$/', $requestBody['description'])) {
+        // if (empty($requestBody['description']) || !preg_match('/^[a-zA-Z0-9]{1,5}$/', $requestBody['description'])) {
+        if (empty($requestBody['description'])) {
             return [
                 'success' => false,
                 'data' => null,
-                'message' => 'Pastikan keterangan tidak kosong, hanya huruf atau angka, dan maksimal 5 karakter'
+                'message' => 'Pastikan keterangan tidak kosong'
             ];
         }
         // Validasi 'dateAttendance'

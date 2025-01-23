@@ -50,6 +50,26 @@
                                         <option value="semua_data">Semua Data</option>
                                     </select>
                                 </div>
+                                <div class="mb-3">
+                                    <label for="departement" class="form-label fw-bold">Departemen</label>
+                                    <select id="departement" class="form-select mb-3" aria-label="Default select example">
+                                        <option value="">Pilih Departemen</option>
+                                        <option value="M2">M2</option>
+                                        <option value="TM">TM</option>
+                                        <option value="SM">SM</option>
+                                        <option value="QA">QA</option>
+                                        <option value="PURCHASING">PURCHASING</option>
+                                        <option value="PRODUCTION">PRODUCTION</option>
+                                        <option value="PE">PE</option>
+                                        <option value="ME">ME</option>
+                                        <option value="MCA">MCA</option>
+                                        <option value="M1">M1</option>
+                                        <option value="LOGISTIC">LOGISTIC</option>
+                                        <option value="ADMINISTRATION">ADMINISTRATION</option>
+                                        <option value="ACCOUNTING">ACCOUNTING</option>
+                                        <option value="semua_departemen">SEMUA DEPARTEMEN</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-primary shadow rounded-0">Cetak Laporan</button>
@@ -71,6 +91,7 @@
         const startDate = document.getElementById('start-date').value
         const endDate = document.getElementById('end-date').value
         const employeeAttendance = document.getElementById('employee-attendance').value
+        const departement = document.getElementById('departement').value
 
         if(!startDate) {
             return SwalAlert.warning('Data tidak lengkap!', 'Tanggal mulai wajib diisi.')
@@ -84,7 +105,10 @@
         if (new Date(startDate) > new Date(endDate)) {
             return SwalAlert.warning('Data tidak valid!', 'Tanggal mulai harus lebih kecil dari tanggal akhir.');
         }
-        const url = `/attendance/views/file-report.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&employee_attendance=${encodeURIComponent(employeeAttendance)}`;
+        if(!departement) {
+            return SwalAlert.warning('Data tidak lengkap!', 'Departemen wajib dipilih')
+        }
+        const url = `/attendance/views/file-report.php?start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}&employee_attendance=${encodeURIComponent(employeeAttendance)}&departement=${encodeURIComponent(departement)}`;
         window.location.href = url;
     }
 </script>
