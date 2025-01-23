@@ -215,7 +215,7 @@ $pdf->SetX($xPosition - 50);
 $pdf->Cell(50, 7, '', 0, 1, 'R');
 $pdf->Ln(15);
 $pdf->SetX($xPosition - 50);
-$pdf->Cell(50, 7, 'Manager Departemen', 0, 1, 'R');
+$pdf->Cell(50, 7, 'Leader Departemen', 0, 1, 'R');
 
 $pdf->SetY($pdf->GetY() - 29);
 $pdf->SetFont('Arial', '', 7);
